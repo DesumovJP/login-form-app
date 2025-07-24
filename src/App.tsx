@@ -15,15 +15,15 @@ function App() {
   const validUsername = 'user@gmail.com';
   const validPassword = 'password123';
 
-  const validateGmail = (email) => {
+  const validateGmail = (email: string) => {
     return /^([a-zA-Z0-9_.+-]+)@gmail\.com$/.test(email);
   };
 
-  const validatePassword = (pwd) => {
+  const validatePassword = (pwd: string) => {
     return pwd.length >= 6 && /[a-zA-Z]/.test(pwd);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: any) => {
     e.preventDefault();
     if (!validateGmail(username)) {
       setError('Login must be a valid Gmail address.');
@@ -89,7 +89,7 @@ function App() {
           type="text"
           placeholder="Email"
           value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          onChange={(e: any) => setUsername(e.target.value)}
           required
           autoComplete="username"
         />
@@ -98,7 +98,7 @@ function App() {
             type={showPassword ? 'text' : 'password'}
             placeholder="Пароль"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e: any) => setPassword(e.target.value)}
             required
             autoComplete="current-password"
           />
