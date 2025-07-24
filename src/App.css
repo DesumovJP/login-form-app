@@ -1,0 +1,232 @@
+.google-login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f5f5f5;
+}
+
+.google-login-form {
+  background: #fff;
+  padding: 2.5rem 2.5rem 2rem 2.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(60,64,67,0.15);
+  display: flex;
+  flex-direction: column;
+  min-width: 340px;
+  max-width: 95vw;
+  gap: 1.1rem;
+  font-family: 'Roboto', Arial, sans-serif;
+  border: 1px solid #e0e0e0;
+  position: relative;
+  transition: box-shadow 0.2s, border 0.2s;
+}
+
+.google-login-form.shake {
+  animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes shake {
+  10%, 90% { transform: translateX(-2px); }
+  20%, 80% { transform: translateX(4px); }
+  30%, 50%, 70% { transform: translateX(-8px); }
+  40%, 60% { transform: translateX(8px); }
+}
+
+.google-logo {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+}
+
+.google-title {
+  margin: 0.5rem 0 0.2rem 0;
+  color: #202124;
+  font-family: 'Roboto', Arial, sans-serif;
+  font-weight: 500;
+  font-size: 1.6rem;
+  letter-spacing: 0.01em;
+  text-align: left;
+}
+
+.google-subtitle {
+  color: #5f6368;
+  font-size: 1.05rem;
+  margin-bottom: 0.5rem;
+  text-align: left;
+  font-family: 'Roboto', Arial, sans-serif;
+}
+
+.google-login-form input {
+  padding: 0.85rem 1.1rem;
+  border: 1px solid #dadce0;
+  border-radius: 4px;
+  font-size: 1.05rem;
+  outline: none;
+  background: #f8f9fa;
+  color: #222;
+  font-family: 'Roboto', Arial, sans-serif;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+
+.google-login-form input:focus {
+  border: 1.5px solid #4285f4;
+  background: #fff;
+  box-shadow: 0 0 0 2px #e8f0fe;
+}
+
+.password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: #5f6368;
+  user-select: none;
+  transition: color 0.2s;
+}
+.toggle-password:focus {
+  outline: 2px solid #4285f4;
+}
+.toggle-password:hover {
+  color: #4285f4;
+}
+
+.form-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: -0.5rem;
+  margin-bottom: -0.5rem;
+}
+
+.remember-me {
+  display: flex;
+  align-items: center;
+  font-size: 0.98rem;
+  color: #5f6368;
+  font-family: 'Roboto', Arial, sans-serif;
+  gap: 0.4rem;
+}
+
+.forgot-password {
+  color: #1a73e8;
+  text-decoration: none;
+  font-size: 0.98rem;
+  cursor: pointer;
+  transition: text-decoration 0.2s, color 0.2s;
+}
+.forgot-password:hover, .forgot-password:focus {
+  text-decoration: underline;
+  color: #174ea6;
+}
+
+.google-login-form button {
+  padding: 0.85rem 1.1rem;
+  background: #1a73e8;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+  box-shadow: 0 1px 2px rgba(60,64,67,0.15);
+  font-family: 'Roboto', Arial, sans-serif;
+  outline: none;
+  margin-top: 0.5rem;
+}
+.google-login-form button:hover:not(:disabled), .google-login-form button:focus:not(:disabled) {
+  background: #174ea6;
+  box-shadow: 0 2px 8px rgba(60,64,67,0.18);
+  transform: translateY(-2px) scale(1.03);
+}
+.google-login-form button.success {
+  background: #34a853;
+  color: #fff;
+  cursor: default;
+}
+.google-login-form button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.error {
+  color: #d93025;
+  background: #fce8e6;
+  border: 1.5px solid #d93025;
+  border-radius: 4px;
+  padding: 0.6rem 1.1rem;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  text-align: left;
+  font-family: 'Roboto', Arial, sans-serif;
+  animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.success-animation {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  animation: popIn 0.7s cubic-bezier(.36,.07,.19,.97) both;
+}
+@keyframes popIn {
+  0% { transform: scale(0.5); opacity: 0; }
+  80% { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1); }
+}
+
+.google-login-container h2 {
+  color: #202124;
+  font-family: 'Roboto', Arial, sans-serif;
+}
+
+.logout-btn {
+  margin-top: 1.5rem;
+  padding: 0.85rem 1.1rem;
+  background: #1a73e8;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+  box-shadow: 0 1px 2px rgba(60,64,67,0.15);
+  font-family: 'Roboto', Arial, sans-serif;
+}
+.logout-btn:hover, .logout-btn:focus {
+  background: #174ea6;
+  box-shadow: 0 2px 8px rgba(60,64,67,0.18);
+  transform: translateY(-2px) scale(1.03);
+}
+
+@media (max-width: 500px) {
+  .google-login-form {
+    min-width: 90vw;
+    padding: 1.2rem 0.5rem;
+    border-radius: 8px;
+  }
+  .google-logo svg {
+    width: 48px;
+    height: 16px;
+  }
+  .google-title {
+    font-size: 1.2rem;
+  }
+  .google-login-form button, .logout-btn {
+    font-size: 1rem;
+    padding: 0.7rem 0.8rem;
+  }
+}
