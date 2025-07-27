@@ -57,7 +57,7 @@ function FingoalsDashboard() {
             >
               {Icons.menu}
             </button>
-          </div>
+      </div>
 
           {/* Логотип */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -74,7 +74,7 @@ function FingoalsDashboard() {
               fontWeight: 'bold'
             }}>
               F
-            </div>
+      </div>
             <span style={{ 
               fontSize: '20px', 
               fontWeight: '600', 
@@ -82,7 +82,7 @@ function FingoalsDashboard() {
             }}>
               Fingoals
             </span>
-          </div>
+    </div>
 
           {/* Навігаційні вкладки */}
           <div className="nav-tabs">
@@ -257,8 +257,8 @@ function FingoalsDashboard() {
                 <span>{Icons.house}</span>
                 <span style={{ fontSize: '14px' }}>Emergency Funds</span>
               </div>
-            </div>
-          </div>
+      </div>
+    </div>
 
           {/* Нижня картка */}
           <div style={{
@@ -296,7 +296,7 @@ function FingoalsDashboard() {
               14 day free-trial {Icons.arrow}
             </button>
           </div>
-        </div>
+      </div>
 
         {/* Оверлей для мобільного меню */}
         {sidebarOpen && (
@@ -322,8 +322,8 @@ function FingoalsDashboard() {
               </h1>
               <div style={{ fontSize: '14px', color: '#64748b' }}>
                 Overview &gt; All Reports
-              </div>
-            </div>
+      </div>
+    </div>
             
             <div className="action-buttons">
               <select style={{
@@ -362,7 +362,7 @@ function FingoalsDashboard() {
                 {Icons.filter} Filter
               </button>
             </div>
-          </div>
+    </div>
 
           {/* Сітка карток */}
           <div className="cards-grid">
@@ -440,8 +440,8 @@ function FingoalsDashboard() {
                       background: index % 3 === 0 ? '#2563eb' : index % 3 === 1 ? '#1e293b' : '#64748b'
                     }}></div>
                   </div>
-                ))}
-              </div>
+        ))}
+      </div>
             </div>
 
             {/* Права колонка з трьома картками */}
@@ -544,14 +544,14 @@ function FingoalsDashboard() {
                   </div>
                   <div style={{ fontSize: '14px', marginBottom: '8px', opacity: '0.8' }}>
                     Track and Print Report
-                  </div>
+                    </div>
                   <div style={{ fontSize: '18px', fontWeight: '600' }}>
                     Financial Report
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
+        </div>
+    </div>
 
           {/* Друга сітка карток */}
           <div className="income-balance-grid">
@@ -593,16 +593,16 @@ function FingoalsDashboard() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px' }}>
                   <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#1e293b' }}></div>
                   Freelance
-                </div>
+        </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px' }}>
                   <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#64748b' }}></div>
                   Bonus
-                </div>
+        </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px' }}>
                   <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#f1f5f9' }}></div>
                   Another job
-                </div>
-              </div>
+        </div>
+        </div>
 
               {/* Стовпчаста діаграма */}
               <div style={{
@@ -636,11 +636,11 @@ function FingoalsDashboard() {
                   background: '#3b82f6',
                   borderRadius: '4px 4px 0 0'
                 }}></div>
-              </div>
+    </div>
 
               <div style={{ fontSize: '14px', color: '#16a34a', fontWeight: '600', marginBottom: '12px' }}>
                 +73,6% better than last month
-              </div>
+          </div>
 
               <div className="select-group">
                 <select style={{
@@ -659,8 +659,8 @@ function FingoalsDashboard() {
                 }}>
                   <option>All Sources</option>
                 </select>
-              </div>
-            </div>
+        </div>
+      </div>
 
             {/* Financial Balance - 1/4 ширини */}
             <div className="card financial-balance-card">
@@ -681,19 +681,19 @@ function FingoalsDashboard() {
                   <option>For Week</option>
                   <option>For Month</option>
                 </select>
-              </div>
+      </div>
 
               {/* Легенда */}
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', marginBottom: '16px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px' }}>
                   <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#e2e8f0' }}></div>
                   Total
-                </div>
+        </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px' }}>
                   <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#2563eb' }}></div>
                   Profit Today
-                </div>
-              </div>
+      </div>
+    </div>
 
               {/* Напівкругла діаграма */}
               <div className="half-circle-chart">
@@ -757,9 +757,7 @@ function FingoalsDashboard() {
                 {Icons.arrow} Profit is 22% More short last week
               </div>
             </div>
-          </div>
-
-
+            </div>
         </div>
       </div>
     </div>
