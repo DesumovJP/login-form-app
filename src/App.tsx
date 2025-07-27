@@ -1,398 +1,765 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate, Navigate } from 'react-router-dom';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
 import './App.css';
 
-const incomeData = [
-  { source: 'Salary', amount: 3200 },
-  { source: 'Freelance', amount: 1200 },
-  { source: 'Investments', amount: 600 },
-  { source: 'Other', amount: 200 },
-];
+// Іконки (використовуємо emoji для простоти)
+const Icons = {
+  logo: '⬜',
+  settings: '⚙️',
+  notifications: '🔔',
+  box: '📦',
+  document: '📄',
+  chart: '📊',
+  person: '👤',
+  piggy: '🏦',
+  house: '🏠',
+  plus: '➕',
+  download: '⬇️',
+  filter: '🔍',
+  close: '✖️',
+  arrow: '➡️',
+  arrowDown: '⬇️',
+  thumbsUp: '👍',
+  menu: '☰'
+};
 
-const expensesData = [
-  { category: 'Rent', value: 1200 },
-  { category: 'Food', value: 400 },
-  { category: 'Transport', value: 150 },
-  { category: 'Entertainment', value: 100 },
-  { category: 'Other', value: 80 },
-];
-
-const COLORS = ['#2563eb', '#60a5fa', '#1e40af', '#38bdf8', '#6366f1'];
-
-function BalanceCard() {
-  const totalIncome = incomeData.reduce((sum, i) => sum + i.amount, 0);
-  const totalExpenses = expensesData.reduce((sum, e) => sum + e.value, 0);
-  const balance = totalIncome - totalExpenses;
-  // Generate random balances for USDT and BTC wallets
-  const usdtBalance = (Math.random() * 1000).toFixed(2);
-  const btcBalance = (Math.random() * 0.5).toFixed(4);
-  return (
-    <div style={{ background: '#fff', borderRadius: 12, boxShadow: '0 2px 8px #dbeafe', border: '1px solid #dbeafe', padding: 24, minWidth: 220, flex: 1 }}>
-      <div style={{ color: '#2563eb', fontWeight: 500, marginBottom: 8 }}>Баланс <span style={{ fontWeight: 400, color: '#64748b' }}>(після податку)</span></div>
-      <div style={{ fontSize: 32, fontWeight: 700, color: balance >= 0 ? '#16a34a' : '#ef4444' }}>{balance >= 0 ? '+' : ''}${balance.toLocaleString()}</div>
-      <div style={{ color: '#64748b', fontSize: 15, marginTop: 8 }}>Загальний дохід: <b>${totalIncome.toLocaleString()}</b></div>
-      <div style={{ color: '#64748b', fontSize: 15 }}>Загальні витрати: <b>${totalExpenses.toLocaleString()}</b></div>
-      <div style={{ color: '#2563eb', fontWeight: 500, marginTop: 18, marginBottom: 4 }}>Гаманці</div>
-      <div style={{ color: '#64748b', fontSize: 15, display: 'flex', alignItems: 'center', gap: 8 }}>
-        <span role="img" aria-label="usdt">💵</span> USDT: <b>{usdtBalance}</b>
-      </div>
-      <div style={{ color: '#64748b', fontSize: 15, display: 'flex', alignItems: 'center', gap: 8 }}>
-        <span role="img" aria-label="btc">₿</span> BTC: <b>{btcBalance}</b>
-      </div>
-    </div>
-  );
-}
-
-function IncomeSourcesCard() {
-  return (
-    <div style={{ background: '#fff', borderRadius: 12, boxShadow: '0 2px 8px #dbeafe', border: '1px solid #dbeafe', padding: 24, minWidth: 320, flex: 2, display: 'flex', flexDirection: 'column' }}>
-      <div style={{ color: '#2563eb', fontWeight: 500, marginBottom: 8 }}>Джерела доходу</div>
-      <div style={{ width: '100%', height: 180 }}>
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={incomeData} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
-            <XAxis dataKey="source" tick={{ fontSize: 13 }} />
-            <YAxis tick={{ fontSize: 13 }} />
-            <Tooltip />
-            <Bar dataKey="amount" fill="#2563eb">
-              {incomeData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-              ))}
-            </Bar>
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
-      <div style={{ color: '#64748b', fontSize: 15, marginTop: 8 }}>
-        Загальна кількість джерел: <b>{incomeData.length}</b>
-      </div>
-    </div>
-  );
-}
-
-function ExpensesCard() {
-  return (
-    <div style={{ background: '#fff', borderRadius: 12, boxShadow: '0 2px 8px #dbeafe', border: '1px solid #dbeafe', padding: 24, minWidth: 320, flex: 2, display: 'flex', flexDirection: 'column' }}>
-      <div style={{ color: '#2563eb', fontWeight: 500, marginBottom: 8 }}>Витрати за категоріями</div>
-      <div style={{ width: '100%', height: 180 }}>
-        <ResponsiveContainer width="100%" height="100%">
-          <PieChart>
-            <Pie data={expensesData} dataKey="value" nameKey="category" cx="50%" cy="50%" outerRadius={60} label>
-              {expensesData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-              ))}
-            </Pie>
-            <Legend />
-            <Tooltip />
-          </PieChart>
-        </ResponsiveContainer>
-      </div>
-      <div style={{ color: '#64748b', fontSize: 15, marginTop: 8 }}>
-        Загальна кількість категорій: <b>{expensesData.length}</b>
-      </div>
-    </div>
-  );
-}
-
-function AnalyticsCard() {
-  const totalIncome = incomeData.reduce((sum, i) => sum + i.amount, 0);
-  const totalExpenses = expensesData.reduce((sum, e) => sum + e.value, 0);
-  const percentSaved = totalIncome ? Math.round(((totalIncome - totalExpenses) / totalIncome) * 100) : 0;
-  return (
-    <div style={{ background: '#fff', borderRadius: 12, boxShadow: '0 2px 8px #dbeafe', border: '1px solid #dbeafe', padding: 24, minWidth: 220, flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-      <div style={{ color: '#2563eb', fontWeight: 500, marginBottom: 8 }}>Аналітика</div>
-      <div style={{ fontSize: 22, fontWeight: 700, color: '#1e40af', marginBottom: 8 }}>{percentSaved}%</div>
-      <div style={{ color: '#64748b', fontSize: 15, textAlign: 'center' }}>з вашого доходу збережено за місяць</div>
-      <div style={{ color: '#64748b', fontSize: 15, textAlign: 'center', marginTop: 8 }}>Витрати / Дохід: <b>{Math.round((totalExpenses / totalIncome) * 100)}%</b></div>
-    </div>
-  );
-}
-
-function CalendarIncomeCard() {
-  // Generate fake income data for each day of the current month
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = now.getMonth();
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  // For demo: random income between 0 and 200 for each day
-  const dailyIncome = Array.from({ length: daysInMonth }, (_, i) => ({
-    day: i + 1,
-    income: Math.round(Math.random() * 200),
-    expenses: [
-      { category: 'Rent', value: Math.round(Math.random() * 50) },
-      { category: 'Food', value: Math.round(Math.random() * 30) },
-      { category: 'Transport', value: Math.round(Math.random() * 20) },
-      { category: 'Entertainment', value: Math.round(Math.random() * 15) },
-      { category: 'Other', value: Math.round(Math.random() * 10) },
-    ],
-  }));
-  // Get the weekday of the 1st day (0=Sun, 1=Mon...)
-  const firstDayWeekday = new Date(year, month, 1).getDay();
-  const weekDays = ['Нд', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
-
-  // Build calendar grid: array of weeks, each week is array of days (or null)
-  const weeks: (typeof dailyIncome[number] | null)[][] = [];
-  let week: (typeof dailyIncome[number] | null)[] = Array(firstDayWeekday).fill(null);
-  dailyIncome.forEach((d) => {
-    week.push(d);
-    if (week.length === 7) {
-      weeks.push(week);
-      week = [];
-    }
-  });
-  if (week.length > 0) {
-    while (week.length < 7) week.push(null);
-    weeks.push(week);
-  }
+function FingoalsDashboard() {
+  const [activeTab, setActiveTab] = useState('Dashboard');
+  const [expensePeriod, setExpensePeriod] = useState('Weekly');
+  const [incomePeriod, setIncomePeriod] = useState('30 Days');
+  const [balancePeriod, setBalancePeriod] = useState('For Week');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div style={{ background: '#fff', borderRadius: 12, boxShadow: '0 2px 8px #dbeafe', border: '1px solid #dbeafe', padding: '2rem', maxWidth: 1200, margin: '32px auto 0 auto', width: '100%' }}>
-      <div style={{ color: '#2563eb', fontWeight: 500, marginBottom: 16, fontSize: 18 }}>Календар доходу (липень {year})</div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 8, marginBottom: 8 }}>
-        {weekDays.map((wd) => (
-          <div key={wd} style={{ color: '#64748b', fontWeight: 600, textAlign: 'center', fontSize: 15 }}>{wd}</div>
-        ))}
+    <div style={{ 
+      minHeight: '100vh', 
+      background: '#f8fafc',
+      fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
+      position: 'relative'
+    }}>
+      
+      {/* Хедер на всю ширину */}
+      <div className="full-width-header">
+        <div className="header-content">
+          {/* Мобільне меню кнопка */}
+          <div className="mobile-menu-btn">
+            <button 
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              style={{
+                background: '#2563eb',
+                color: '#fff',
+                border: 'none',
+                borderRadius: '8px',
+                padding: '12px',
+                fontSize: '18px',
+                cursor: 'pointer',
+                zIndex: 1001
+              }}
+            >
+              {Icons.menu}
+            </button>
+          </div>
+
+          {/* Логотип */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div style={{
+              background: '#2563eb',
+              color: '#fff',
+              width: '32px',
+              height: '32px',
+              borderRadius: '8px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '16px',
+              fontWeight: 'bold'
+            }}>
+              F
+            </div>
+            <span style={{ 
+              fontSize: '20px', 
+              fontWeight: '600', 
+              color: '#1e293b'
+            }}>
+              Fingoals
+            </span>
+          </div>
+
+          {/* Навігаційні вкладки */}
+          <div className="nav-tabs">
+            {['Dashboard', 'Analytics', 'Invoice', 'Joint Savings', 'Calendar'].map(tab => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`nav-tab ${activeTab === tab ? 'active' : ''}`}
+                style={{
+                  color: activeTab === tab ? '#2563eb' : '#64748b'
+                }}
+              >
+                {tab}
+              </button>
+            ))}
+          </div>
+
+          {/* Права частина */}
+          <div className="profile-info">
+            <span style={{ fontSize: '18px', cursor: 'pointer' }}>{Icons.settings}</span>
+            <span style={{ fontSize: '18px', cursor: 'pointer' }}>{Icons.notifications}</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <div className="avatar">
+                MD
+              </div>
+              <div className="profile-details">
+                <div style={{ fontSize: '14px', fontWeight: '500', color: '#1e293b' }}>
+                  Maretta Daniel
+                </div>
+                <div style={{ fontSize: '12px', color: '#64748b' }}>
+                  danielmaretta@mail.com
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      {weeks.map((week, i) => (
-        <div key={i} style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 8, marginBottom: 4 }}>
-          {week.map((d, j) =>
-            d ? (
-              <div key={j} className="calendar-day" style={{ background: '#2563eb', color: '#fff', borderRadius: 8, minHeight: 48, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', fontWeight: 600, fontSize: 15, position: 'relative' }}>
-                <div style={{ fontSize: 17, fontWeight: 700, textAlign: 'center', width: '100%' }}>{d.day}</div>
-                <div style={{ fontSize: 15 }}>{d.income > 0 ? `+$${d.income}` : '-'}</div>
-                <div className="calendar-tooltip">
-                  <div style={{ fontWeight: 600, color: '#2563eb', marginBottom: 4 }}>Витрати</div>
-                  {d.expenses.map((e) => (
-                    <div key={e.category} style={{ color: '#64748b', fontSize: 14, display: 'flex', justifyContent: 'space-between' }}>
-                      <span>{e.category}</span>
-                      <span>${e.value}</span>
-                    </div>
-                  ))}
-                  <div style={{ color: '#1e40af', fontWeight: 500, marginTop: 6, fontSize: 15 }}>
-                    Загальна сума: ${d.expenses.reduce((sum, e) => sum + e.value, 0)}
+
+      {/* Основний контент з бічною панеллю */}
+      <div style={{ display: 'flex' }}>
+        {/* Ліва бічна панель */}
+        <div className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
+          
+          {/* Привітання */}
+          <div>
+            <h2 style={{ 
+              fontSize: '20px', 
+              fontWeight: '600', 
+              color: '#1e293b',
+              margin: '0 0 4px 0'
+            }}>
+              Welcome Back, Daniel!
+            </h2>
+            <p style={{ 
+              fontSize: '14px', 
+              color: '#64748b',
+              margin: '0'
+            }}>
+              Current summary financial report
+            </p>
+          </div>
+
+          {/* HOME секція */}
+          <div>
+            <h3 style={{ 
+              fontSize: '12px', 
+              fontWeight: '600', 
+              color: '#64748b',
+              textTransform: 'uppercase',
+              margin: '0 0 16px 0',
+              letterSpacing: '0.5px'
+            }}>
+              HOME
+            </h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                padding: '12px 16px',
+                background: '#1e293b',
+                borderRadius: '8px',
+                color: '#fff'
+              }}>
+                <span>{Icons.box}</span>
+                <span style={{ fontSize: '14px', fontWeight: '500' }}>Overview</span>
+                <span style={{ marginLeft: 'auto' }}>{Icons.arrowDown}</span>
+              </div>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                padding: '12px 16px',
+                color: '#64748b'
+              }}>
+                <span>{Icons.document}</span>
+                <span style={{ fontSize: '14px' }}>Legacy Statement</span>
+              </div>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                padding: '12px 16px',
+                color: '#64748b'
+              }}>
+                <span>{Icons.chart}</span>
+                <span style={{ fontSize: '14px' }}>Financial Projection</span>
+              </div>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                padding: '12px 16px',
+                color: '#64748b'
+              }}>
+                <span>{Icons.person}</span>
+                <span style={{ fontSize: '14px' }}>Account</span>
+              </div>
+            </div>
+          </div>
+
+          {/* POCKET секція */}
+          <div>
+            <div style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'space-between',
+              marginBottom: '16px'
+            }}>
+              <h3 style={{ 
+                fontSize: '12px', 
+                fontWeight: '600', 
+                color: '#64748b',
+                textTransform: 'uppercase',
+                margin: '0',
+                letterSpacing: '0.5px'
+              }}>
+                POCKET
+              </h3>
+              <span style={{ 
+                background: '#2563eb', 
+                color: '#fff',
+                borderRadius: '50%',
+                width: '20px',
+                height: '20px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '12px'
+              }}>
+                {Icons.plus}
+              </span>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                padding: '12px 16px',
+                color: '#64748b'
+              }}>
+                <span>{Icons.piggy}</span>
+                <span style={{ fontSize: '14px' }}>Married Savings</span>
+              </div>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                padding: '12px 16px',
+                color: '#64748b'
+              }}>
+                <span>{Icons.house}</span>
+                <span style={{ fontSize: '14px' }}>Emergency Funds</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Нижня картка */}
+          <div style={{
+            background: '#2563eb',
+            borderRadius: '12px',
+            padding: '20px',
+            color: '#fff',
+            marginTop: 'auto'
+          }}>
+            <div style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '12px',
+              marginBottom: '12px'
+            }}>
+              <span style={{ fontSize: '24px' }}>{Icons.thumbsUp}</span>
+              <div>
+                <div style={{ fontSize: '14px', fontWeight: '600' }}>Unlock full version</div>
+                <div style={{ fontSize: '12px', opacity: '0.8' }}>20+ matrixs</div>
+              </div>
+            </div>
+            <button style={{
+              background: '#fff',
+              color: '#2563eb',
+              border: 'none',
+              borderRadius: '8px',
+              padding: '10px 16px',
+              fontSize: '14px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}>
+              14 day free-trial {Icons.arrow}
+            </button>
+          </div>
+        </div>
+
+        {/* Оверлей для мобільного меню */}
+        {sidebarOpen && (
+          <div 
+            onClick={() => setSidebarOpen(false)}
+            className="sidebar-overlay"
+          />
+        )}
+
+        {/* Основна область контенту */}
+        <div className="main-content">
+
+          {/* Заголовок та кнопки дій */}
+          <div className="card-header">
+            <div>
+              <h1 style={{ 
+                fontSize: '24px', 
+                fontWeight: '600', 
+                color: '#1e293b',
+                margin: '0 0 4px 0'
+              }}>
+                Financial Overview
+              </h1>
+              <div style={{ fontSize: '14px', color: '#64748b' }}>
+                Overview &gt; All Reports
+              </div>
+            </div>
+            
+            <div className="action-buttons">
+              <select style={{
+                padding: '8px 12px',
+                borderRadius: '6px',
+                border: '1px solid #d1d5db',
+                background: '#fff',
+                fontSize: '14px'
+              }}>
+                <option>Default View</option>
+              </select>
+              <button style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                padding: '8px 12px',
+                borderRadius: '6px',
+                border: '1px solid #d1d5db',
+                background: '#fff',
+                fontSize: '14px',
+                cursor: 'pointer'
+              }}>
+                {Icons.download} Export
+              </button>
+              <button style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                padding: '8px 12px',
+                borderRadius: '6px',
+                border: '1px solid #d1d5db',
+                background: '#fff',
+                fontSize: '14px',
+                cursor: 'pointer'
+              }}>
+                {Icons.filter} Filter
+              </button>
+            </div>
+          </div>
+
+          {/* Сітка карток */}
+          <div className="cards-grid">
+            
+            {/* Expense Breakdown - ліва колонка на всю висоту */}
+            <div className="card expense-breakdown-card">
+              <div className="card-header">
+                <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#1e293b', margin: '0' }}>
+                  Expense Breakdown
+                </h3>
+                <select 
+                  value={expensePeriod}
+                  onChange={(e) => setExpensePeriod(e.target.value)}
+                  style={{
+                    padding: '4px 8px',
+                    borderRadius: '4px',
+                    border: '1px solid #d1d5db',
+                    fontSize: '12px'
+                  }}
+                >
+                  <option>Weekly</option>
+                  <option>Monthly</option>
+                </select>
+              </div>
+              
+              <div style={{ fontSize: '24px', fontWeight: '700', color: '#1e293b', marginBottom: '16px' }}>
+                $ 17,3K
+              </div>
+
+              {/* Легенда */}
+              <div className="legend">
+                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px' }}>
+                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#2563eb' }}></div>
+                  $1-$100
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px' }}>
+                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#1e293b' }}></div>
+                  $100-$300
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px' }}>
+                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#64748b' }}></div>
+                  &gt;$300
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px' }}>
+                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#f1f5f9' }}></div>
+                  No Expenses
+                </div>
+              </div>
+
+              {/* Категорії */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '16px' }}>
+                <div style={{ fontSize: '14px', color: '#64748b' }}>Groceries</div>
+                <div style={{ fontSize: '14px', color: '#64748b' }}>Fashion</div>
+                <div style={{ fontSize: '14px', color: '#64748b' }}>Electronics</div>
+              </div>
+
+              {/* Сітка днів */}
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(7, 1fr)',
+                gap: '4px'
+              }}>
+                {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, index) => (
+                  <div key={day} style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: '4px'
+                  }}>
+                    <div style={{ fontSize: '10px', color: '#64748b' }}>{day}</div>
+                    <div style={{
+                      width: '16px',
+                      height: '16px',
+                      borderRadius: '50%',
+                      background: index % 3 === 0 ? '#2563eb' : index % 3 === 1 ? '#1e293b' : '#64748b'
+                    }}></div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Права колонка з трьома картками */}
+            <div className="right-column-cards">
+              {/* Financial Class Mastery */}
+              <div style={{
+                background: 'linear-gradient(135deg, #1e293b 0%, #334155 100%)',
+                borderRadius: '12px',
+                padding: '24px',
+                color: '#fff',
+                position: 'relative',
+                overflow: 'hidden'
+              }} className="card">
+                <div style={{
+                  position: 'absolute',
+                  top: '-20px',
+                  right: '-20px',
+                  width: '80px',
+                  height: '80px',
+                  background: 'rgba(255,255,255,0.1)',
+                  borderRadius: '50%'
+                }}></div>
+                <div style={{
+                  position: 'absolute',
+                  bottom: '-30px',
+                  left: '-30px',
+                  width: '120px',
+                  height: '120px',
+                  background: 'rgba(255,255,255,0.05)',
+                  borderRadius: '50%'
+                }}></div>
+                
+                <h3 style={{ fontSize: '16px', fontWeight: '600', margin: '0 0 8px 0' }}>
+                  Join Our Financial Class Mastery
+                </h3>
+                <div style={{ fontSize: '14px', opacity: '0.8', marginBottom: '16px' }}>
+                  +15% discount for member
+                </div>
+                <button style={{
+                  background: '#2563eb',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '8px',
+                  padding: '10px 16px',
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}>
+                  Join Class {Icons.arrow}
+                </button>
+              </div>
+
+              {/* Нижня сітка з двома картками */}
+              <div className="bottom-cards-grid">
+                {/* Today Received */}
+                <div className="card" style={{ position: 'relative' }}>
+                  <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#1e293b', margin: '0 0 8px 0' }}>
+                    Today Received
+                  </h3>
+                  <div style={{ fontSize: '24px', fontWeight: '700', color: '#1e293b', marginBottom: '8px' }}>
+                    $ 532,921
+                  </div>
+                  <div style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: '4px',
+                    fontSize: '14px',
+                    color: '#ef4444'
+                  }}>
+                    {Icons.arrowDown} 12%
+                  </div>
+                  <div style={{
+                    position: 'absolute',
+                    bottom: '16px',
+                    right: '16px',
+                    fontSize: '16px',
+                    cursor: 'pointer'
+                  }}>
+                    {Icons.arrowDown}
+                  </div>
+                </div>
+
+                {/* Financial Report */}
+                <div className="card" style={{
+                  background: '#1e293b',
+                  color: '#fff'
+                }}>
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    marginBottom: '12px'
+                  }}>
+                    <span style={{ fontSize: '16px', cursor: 'pointer' }}>{Icons.close}</span>
+                    <span style={{ fontSize: '16px' }}>{Icons.document}</span>
+                    <span style={{ fontSize: '16px' }}>{Icons.arrow}</span>
+                  </div>
+                  <div style={{ fontSize: '14px', marginBottom: '8px', opacity: '0.8' }}>
+                    Track and Print Report
+                  </div>
+                  <div style={{ fontSize: '18px', fontWeight: '600' }}>
+                    Financial Report
                   </div>
                 </div>
               </div>
-            ) : (
-              <div key={j} />
-            )
-          )}
-        </div>
-      ))}
-    </div>
-  );
-}
-
-function CreateGoalCard() {
-  const [name, setName] = useState('');
-  const [desc, setDesc] = useState('');
-  const [amount, setAmount] = useState('');
-  const [goals, setGoals] = useState<{ name: string; desc: string; amount: number }[]>([]);
-  const [error, setError] = useState('');
-
-  const handleCreate = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!name.trim() || !amount.trim() || isNaN(Number(amount))) {
-      setError('Будь ласка, введіть назву та валідну суму.');
-      return;
-    }
-    setGoals([
-      ...goals,
-      { name: name.trim(), desc: desc.trim(), amount: Number(amount) },
-    ]);
-    setName('');
-    setDesc('');
-    setAmount('');
-    setError('');
-  };
-
-  return (
-    <div style={{ background: '#fff', borderRadius: 12, boxShadow: '0 2px 8px #dbeafe', border: '1px solid #dbeafe', margin: '32px 0 0 0', width: '100%', padding: '2rem' }}>
-      <div style={{ color: '#2563eb', fontWeight: 500, fontSize: 18, marginBottom: 16 }}>Створити ціль</div>
-      <form onSubmit={handleCreate} style={{ display: 'flex', flexWrap: 'wrap', gap: 16, alignItems: 'flex-end', marginBottom: 16 }}>
-        <div style={{ flex: 1, minWidth: 180, maxWidth: 300, marginBottom: 12 }}>
-          <label style={{ color: '#64748b', fontSize: 15, fontWeight: 500 }}>Назва</label>
-          <input value={name} onChange={e => setName(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: 6, border: '1px solid #dbeafe', fontSize: 15, marginTop: 4 }} placeholder="Моя ціль" />
-        </div>
-        <div style={{ flex: 2, minWidth: 220, maxWidth: 400, marginBottom: 12 }}>
-          <label style={{ color: '#64748b', fontSize: 15, fontWeight: 500 }}>Опис</label>
-          <input value={desc} onChange={e => setDesc(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: 6, border: '1px solid #dbeafe', fontSize: 15, marginTop: 4 }} placeholder="Короткий опис" />
-        </div>
-        <div style={{ width: 120, minWidth: 100, maxWidth: 160, marginBottom: 12 }}>
-          <label style={{ color: '#64748b', fontSize: 15, fontWeight: 500 }}>Сума</label>
-          <input value={amount} onChange={e => setAmount(e.target.value.replace(/[^0-9.]/g, ''))} style={{ width: '100%', padding: '10px', borderRadius: 6, border: '1px solid #dbeafe', fontSize: 15, marginTop: 4 }} placeholder="0" />
-        </div>
-        <div style={{ flexBasis: '100%', maxWidth: '100%' }} />
-        <button type="submit" style={{ background: '#2563eb', color: '#fff', border: 'none', borderRadius: 6, padding: '12px 24px', fontWeight: 700, fontSize: 16, cursor: 'pointer', marginTop: 22, height: 44, minWidth: 120 }}>Створити</button>
-      </form>
-      {error && <div style={{ color: '#ef4444', marginBottom: 12 }}>{error}</div>}
-      {goals.length > 0 && (
-        <div style={{ marginTop: 12 }}>
-          <div style={{ color: '#2563eb', fontWeight: 500, fontSize: 16, marginBottom: 8 }}>Мої цілі</div>
-          <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-            {goals.map((g, i) => (
-              <li key={i} style={{ background: '#e0e7ef', borderRadius: 8, padding: '12px 16px', marginBottom: 8, display: 'flex', flexDirection: 'column', gap: 2 }}>
-                <div style={{ fontWeight: 600, color: '#1e40af', fontSize: 16 }}>{i + 1}. {g.name}</div>
-                {g.desc && <div style={{ color: '#64748b', fontSize: 14 }}>{g.desc}</div>}
-                <div style={{ color: '#2563eb', fontWeight: 700, fontSize: 15 }}>Сума: ${g.amount}</div>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-    </div>
-  );
-}
-
-function Dashboard({ username, onLogout }: { username: string; onLogout: () => void }) {
-  return (
-    <div style={{ minHeight: '100vh', background: '#f1f5fb' }}>
-      {/* Top bar */}
-      <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', padding: '2rem 2rem 1.5rem 2rem', borderBottom: '1px solid #e0e0e0', background: '#fff' }}>
-        {/* Removed YoWallet title from topbar */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <div style={{ fontWeight: 500, color: '#2563eb' }}>{username}</div>
-          <div style={{ width: 36, height: 36, borderRadius: '50%', background: '#2563eb', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 18 }}>
-            {username.charAt(0).toUpperCase()}
+            </div>
           </div>
-          <button onClick={onLogout} style={{ background: '#2563eb', color: '#fff', border: 'none', borderRadius: 6, padding: '10px 16px', fontWeight: 700, cursor: 'pointer', marginLeft: 16 }}>
-            Вийти
-          </button>
-        </div>
-      </div>
-      {/* Greeting */}
-      <div style={{ maxWidth: 1200, margin: '0 auto', marginTop: 32, marginBottom: 8, paddingLeft: 8, paddingRight: 8 }}>
-        <div style={{ fontSize: 26, fontWeight: 700, color: '#2563eb', letterSpacing: 0.5, marginBottom: 8 }}>Ласкаво просимо, Діма!</div>
-      </div>
-      {/* Main content: grid of cards in a wrapper */}
-      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 2rem' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr 2fr 1fr', gap: 24, marginTop: 32, alignItems: 'stretch' }}>
-          <BalanceCard />
-          <IncomeSourcesCard />
-          <ExpensesCard />
-          <AnalyticsCard />
-        </div>
-        <CalendarIncomeCard />
-        <CreateGoalCard />
-      </div>
-    </div>
-  );
-}
 
-function Login({ onLogin }: { onLogin: (username: string, rememberMe: boolean) => void }) {
-  // Hardcoded credentials for demonstration
-  const validUsername = 'user@gmail.com';
-  const validPassword = 'password123';
+          {/* Друга сітка карток */}
+          <div className="income-balance-grid">
+            
+            {/* Income Sources - 3/4 ширини */}
+            <div className="card income-sources-card">
+              <div className="card-header">
+                <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#1e293b', margin: '0' }}>
+                  Income Sources
+                </h3>
+                <select 
+                  value={incomePeriod}
+                  onChange={(e) => setIncomePeriod(e.target.value)}
+                  style={{
+                    padding: '4px 8px',
+                    borderRadius: '4px',
+                    border: '1px solid #d1d5db',
+                    fontSize: '12px'
+                  }}
+                >
+                  <option>30 Days</option>
+                  <option>60 Days</option>
+                </select>
+              </div>
+              
+              <div style={{ fontSize: '24px', fontWeight: '700', color: '#1e293b', marginBottom: '8px' }}>
+                $ 7,72K
+              </div>
+              <div style={{ fontSize: '14px', color: '#64748b', marginBottom: '16px' }}>
+                Income Sources Statistic in a month
+              </div>
 
-  const [username, setUsername] = useState(validUsername);
-  const [password, setPassword] = useState(validPassword);
-  const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState('');
-  const [rememberMe, setRememberMe] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [shake, setShake] = useState(false);
-  const navigate = useNavigate();
+              {/* Легенда */}
+              <div className="legend">
+                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px' }}>
+                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#2563eb' }}></div>
+                  Salary
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px' }}>
+                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#1e293b' }}></div>
+                  Freelance
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px' }}>
+                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#64748b' }}></div>
+                  Bonus
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px' }}>
+                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#f1f5f9' }}></div>
+                  Another job
+                </div>
+              </div>
 
-  const validateGmail = (email: string) => {
-    return /^([a-zA-Z0-9_.+-]+)@gmail\.com$/.test(email);
-  };
+              {/* Стовпчаста діаграма */}
+              <div style={{
+                display: 'flex',
+                alignItems: 'end',
+                gap: '8px',
+                height: '80px',
+                marginBottom: '12px'
+              }}>
+                <div style={{
+                  width: '20px',
+                  height: '60px',
+                  background: '#64748b',
+                  borderRadius: '4px 4px 0 0'
+                }}></div>
+                <div style={{
+                  width: '20px',
+                  height: '40px',
+                  background: '#2563eb',
+                  borderRadius: '4px 4px 0 0'
+                }}></div>
+                <div style={{
+                  width: '20px',
+                  height: '80px',
+                  background: '#1e40af',
+                  borderRadius: '4px 4px 0 0'
+                }}></div>
+                <div style={{
+                  width: '20px',
+                  height: '50px',
+                  background: '#3b82f6',
+                  borderRadius: '4px 4px 0 0'
+                }}></div>
+              </div>
 
-  const validatePassword = (pwd: string) => {
-    return pwd.length >= 6 && /[a-zA-Z]/.test(pwd);
-  };
+              <div style={{ fontSize: '14px', color: '#16a34a', fontWeight: '600', marginBottom: '12px' }}>
+                +73,6% better than last month
+              </div>
 
-  const handleSubmit = (e: any) => {
-    e.preventDefault();
-    if (!validateGmail(username)) {
-      setError('Логін повинен бути валідним адресою Gmail.');
-      setShake(true);
-      return;
-    }
-    if (!validatePassword(password)) {
-      setError('Пароль повинен містити щонайменше 6 символів та містити хоча б одну літеру.');
-      setShake(true);
-      return;
-    }
-    if (username === validUsername && password === validPassword) {
-      setError('');
-      setSuccess(true);
-      setTimeout(() => {
-        onLogin(username, rememberMe);
-        setSuccess(false);
-        navigate('/home');
-      }, 1200);
-    } else {
-      setError('Неправильний логін або пароль');
-      setShake(true);
-    }
-  };
-
-  // Remove shake after animation
-  React.useEffect(() => {
-    if (shake) {
-      const timer = setTimeout(() => setShake(false), 500);
-      return () => clearTimeout(timer);
-    }
-  }, [shake]);
-
-  React.useEffect(() => {
-    // Auto-fill if remembered
-    const remembered = localStorage.getItem('rememberedUser');
-    if (remembered) {
-      setUsername(remembered);
-      setRememberMe(true);
-    }
-  }, []);
-
-  return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f1f5fb' }}>
-      <div>
-        <span style={{ fontSize: 32, fontWeight: 700, color: '#2563eb', letterSpacing: 1, marginBottom: 18, textAlign: 'center', width: '100%', display: 'block' }}>YoWallet</span>
-        <div className="google-login-form" style={{ maxWidth: 420, width: '100%', padding: '2.5rem 2.5rem 2rem 2.5rem', borderRadius: 12, boxShadow: '0 2px 8px #dbeafe', border: '1px solid #dbeafe', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <form style={{ width: '100%' }} className={shake ? 'google-login-form shake' : 'google-login-form'} onSubmit={handleSubmit} autoComplete="on">
-            <div className="google-subtitle" style={{ textAlign: 'center' }}>Введіть ваші дані</div>
-            <input
-              type="text"
-              placeholder="Електронна пошта"
-              value={username}
-              onChange={(e: any) => setUsername(e.target.value)}
-              required
-              autoComplete="username"
-            />
-            <div className="password-wrapper">
-              <input
-                type={showPassword ? 'text' : 'password'}
-                placeholder="Пароль"
-                value={password}
-                onChange={(e: any) => setPassword(e.target.value)}
-                required
-                autoComplete="current-password"
-              />
-              <span
-                className="toggle-password"
-                onClick={() => setShowPassword((v) => !v)}
-                tabIndex={0}
-                role="button"
-                aria-label={showPassword ? 'Сховати пароль' : 'Показати пароль'}
-              >
-                {showPassword ? '🙈' : '👁️'}
-              </span>
+              <div className="select-group">
+                <select style={{
+                  padding: '4px 8px',
+                  borderRadius: '4px',
+                  border: '1px solid #d1d5db',
+                  fontSize: '12px'
+                }}>
+                  <option>Sort by Month</option>
+                </select>
+                <select style={{
+                  padding: '4px 8px',
+                  borderRadius: '4px',
+                  border: '1px solid #d1d5db',
+                  fontSize: '12px'
+                }}>
+                  <option>All Sources</option>
+                </select>
+              </div>
             </div>
-            <div className="form-row">
-              <label className="remember-me">
-                <input
-                  type="checkbox"
-                  checked={rememberMe}
-                  onChange={() => setRememberMe((v) => !v)}
-                />
-                Запам'ятати мене
-              </label>
-              {/* Removed invalid anchor for accessibility */}
+
+            {/* Financial Balance - 1/4 ширини */}
+            <div className="card financial-balance-card">
+              <div className="card-header">
+                <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#1e293b', margin: '0' }}>
+                  Financial Balance
+                </h3>
+                <select 
+                  value={balancePeriod}
+                  onChange={(e) => setBalancePeriod(e.target.value)}
+                  style={{
+                    padding: '4px 8px',
+                    borderRadius: '4px',
+                    border: '1px solid #d1d5db',
+                    fontSize: '12px'
+                  }}
+                >
+                  <option>For Week</option>
+                  <option>For Month</option>
+                </select>
+              </div>
+
+              {/* Легенда */}
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', marginBottom: '16px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px' }}>
+                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#e2e8f0' }}></div>
+                  Total
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px' }}>
+                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#2563eb' }}></div>
+                  Profit Today
+                </div>
+              </div>
+
+              {/* Напівкругла діаграма */}
+              <div className="half-circle-chart">
+                <svg width="120" height="60" viewBox="0 0 120 60">
+                  {/* Фоновий напівкруг */}
+                  <path
+                    d="M 10 50 A 50 50 0 0 1 110 50"
+                    fill="none"
+                    stroke="#e2e8f0"
+                    strokeWidth="8"
+                    strokeLinecap="round"
+                  />
+                  {/* Прогрес напівкруг */}
+                  <path
+                    className="half-circle-progress"
+                    d="M 10 50 A 50 50 0 0 1 110 50"
+                    fill="none"
+                    stroke="#2563eb"
+                    strokeWidth="8"
+                    strokeLinecap="round"
+                    strokeDasharray="34.54 157"
+                    strokeDashoffset="0"
+                    style={{
+                      transform: 'rotate(-90deg)',
+                      transformOrigin: '60px 30px'
+                    }}
+                  />
+                  {/* Центральний текст */}
+                  <text
+                    x="60"
+                    y="35"
+                    textAnchor="middle"
+                    fontSize="16"
+                    fontWeight="600"
+                    fill="#1e293b"
+                  >
+                    22%
+                  </text>
+                  <text
+                    x="60"
+                    y="50"
+                    textAnchor="middle"
+                    fontSize="10"
+                    fill="#64748b"
+                  >
+                    from yesterday
+                  </text>
+                </svg>
+              </div>
+
+              <div style={{ fontSize: '14px', color: '#64748b', marginBottom: '8px' }}>
+                22% from yesterday
+              </div>
+              <div style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: '4px',
+                fontSize: '14px',
+                color: '#16a34a'
+              }}>
+                {Icons.arrow} Profit is 22% More short last week
+              </div>
             </div>
-            {error && <div className="error">{error}</div>}
-            <button type="submit" className={success ? 'success' : ''} disabled={success} style={{ width: '100%' }}>
-              {success ? 'Успішно!' : 'Далі'}
-            </button>
-          </form>
+          </div>
+
+
         </div>
       </div>
     </div>
@@ -400,37 +767,7 @@ function Login({ onLogin }: { onLogin: (username: string, rememberMe: boolean) =
 }
 
 function App() {
-  const [loggedIn, setLoggedIn] = useState(() => {
-    // Check if remembered user exists
-    return Boolean(localStorage.getItem('rememberedUser'));
-  });
-  const [username, setUsername] = useState(() => localStorage.getItem('rememberedUser') || '');
-
-  const handleLogin = (user: string, remember: boolean) => {
-    setLoggedIn(true);
-    setUsername(user);
-    if (remember) {
-      localStorage.setItem('rememberedUser', user);
-    } else {
-      localStorage.removeItem('rememberedUser');
-    }
-  };
-
-  const handleLogout = () => {
-    setLoggedIn(false);
-    setUsername('');
-    localStorage.removeItem('rememberedUser');
-  };
-
-  return (
-    <Router>
-      <Routes>
-        <Route path="/login" element={loggedIn ? <Navigate to="/home" /> : <Login onLogin={handleLogin} />} />
-        <Route path="/home" element={loggedIn ? <Dashboard username={username} onLogout={handleLogout} /> : <Navigate to="/login" />} />
-        <Route path="*" element={<Navigate to={loggedIn ? "/home" : "/login"} />} />
-      </Routes>
-    </Router>
-  );
+  return <FingoalsDashboard />;
 }
 
 export default App;
