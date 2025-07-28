@@ -1,5 +1,24 @@
 import React, { useState } from 'react';
 import './App.css';
+import HomeIcon from './icons/HomeIcon';
+import DocumentIcon from './icons/DocumentIcon';
+import ChartIcon from './icons/ChartIcon';
+import PersonIcon from './icons/PersonIcon';
+import PiggyIcon from './icons/PiggyIcon';
+import HouseIcon from './icons/HouseIcon';
+import PlusIcon from './icons/PlusIcon';
+import SettingsIcon from './icons/SettingsIcon';
+import NotificationsIcon from './icons/NotificationsIcon';
+import ArrowRightIcon from './icons/ArrowRightIcon';
+import ArrowDownIcon from './icons/ArrowDownIcon';
+import PlusOnlyIcon from './icons/PlusOnlyIcon';
+import KeyIcon from './icons/KeyIcon';
+import ExternalLinkIcon from './icons/ExternalLinkIcon';
+import DownloadIcon from './icons/DownloadIcon';
+import FilterIcon from './icons/FilterIcon';
+import CloseIcon from './icons/CloseIcon';
+import MoreIcon from './icons/MoreIcon';
+import Dropdown from './components/Dropdown';
 
 // Іконки (використовуємо emoji для простоти)
 const Icons = {
@@ -28,6 +47,32 @@ function HomePage() {
   const [incomePeriod, setIncomePeriod] = useState('30 Days');
   const [balancePeriod, setBalancePeriod] = useState('For Week');
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [defaultViewValue, setDefaultViewValue] = useState('Default View');
+  const [sortByValue, setSortByValue] = useState('Sort by Month');
+  const [allSourcesValue, setAllSourcesValue] = useState('All Sources');
+  const [weeklyValue, setWeeklyValue] = useState('Weekly');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Додаємо типи кружечків для кожної категорії та дня
+  const expenseData = [
+    // S, M, T, W, T, F, S
+    // Groceries
+    [
+      'empty', 'gray', 'blue', 'pattern', 'black', 'blue', 'gray'
+    ],
+    // Fashion
+    [
+      'black', 'blue', 'pattern', 'gray', 'gray', 'pattern', 'empty'
+    ],
+    // Electronics
+    [
+      'gray', 'black', 'blue', 'pattern', 'empty', 'gray', 'pattern'
+    ]
+  ];
+  const expenseCategories = ['Groceries', 'Fashion', 'Electronics'];
+  const weekDays = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+
+  const navTabs = ['Dashboard', 'Analytics', 'Invoice', 'Joint Savings', 'Calendar'];
 
   return (
     <div style={{ 
@@ -40,80 +85,133 @@ function HomePage() {
       {/* Хедер на всю ширину */}
       <div className="full-width-header">
         <div className="header-content">
-          {/* Мобільне меню кнопка */}
-          <div className="mobile-menu-btn">
-            <button 
-              onClick={() => setSidebarOpen(!sidebarOpen)}
-              style={{
-                background: '#2563eb',
-                color: '#fff',
-                border: 'none',
-                borderRadius: '8px',
-                padding: '12px',
-                fontSize: '18px',
-                cursor: 'pointer',
-                zIndex: 1001
-              }}
-            >
-              {Icons.menu}
-            </button>
-      </div>
-
-          {/* Логотип */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <div style={{
-              background: '#2563eb',
-              color: '#fff',
-              width: '32px',
-              height: '32px',
-              borderRadius: '8px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '16px',
-              fontWeight: 'bold'
-            }}>
-              F
-      </div>
-            <span style={{ 
-              fontSize: '20px', 
-              fontWeight: '600', 
-              color: '#1e293b'
-            }}>
-              Fingoals
-            </span>
-    </div>
-
-          {/* Навігаційні вкладки */}
-          <div className="nav-tabs">
-            {['Dashboard', 'Analytics', 'Invoice', 'Joint Savings', 'Calendar'].map(tab => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`nav-tab ${activeTab === tab ? 'active' : ''}`}
+          {/* MOBILE: бургер, логотип, меню */}
+          <div className="header-mobile">
+            <div className="mobile-menu-btn" aria-label="Open sidebar menu">
+              <button 
+                onClick={() => setSidebarOpen(!sidebarOpen)}
                 style={{
-                  color: activeTab === tab ? '#2563eb' : '#64748b'
+                  background: '#2563eb',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '8px',
+                  padding: '12px',
+                  fontSize: '18px',
+                  cursor: 'pointer',
+                  zIndex: 1001
                 }}
               >
-                {tab}
+                {Icons.menu}
               </button>
-            ))}
-          </div>
-
-          {/* Права частина */}
-          <div className="profile-info">
-            <span style={{ fontSize: '18px', cursor: 'pointer' }}>{Icons.settings}</span>
-            <span style={{ fontSize: '18px', cursor: 'pointer' }}>{Icons.notifications}</span>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <div className="avatar">
-                MD
-              </div>
-              <div className="profile-details">
-                <div style={{ fontSize: '14px', fontWeight: '500', color: '#1e293b' }}>
-                  Maretta Daniel
+            </div>
+            <div className="mobile-logo-center">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div style={{
+                  background: '#2563eb',
+                  color: '#fff',
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '8px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '16px',
+                  fontWeight: 'bold'
+                }}>
+                  F
                 </div>
-                <div style={{ fontSize: '12px', color: '#64748b' }}>
-                  danielmaretta@mail.com
+                <span style={{ 
+                  fontSize: '20px', 
+                  fontWeight: '600', 
+                  color: '#1e293b'
+                }}>
+                  Fingoals
+                </span>
+              </div>
+            </div>
+            <div className="mobile-nav-dropdown">
+              <button className="mobile-nav-btn" aria-label="Open navigation menu" onClick={() => setMobileMenuOpen((o) => !o)}>
+                Menu
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="#64748b" strokeWidth="1.5" strokeLinecap="round"/></svg>
+              </button>
+              {mobileMenuOpen && (
+                <div className="mobile-nav-list">
+                  {navTabs.map((tab) => (
+                    <button
+                      key={tab}
+                      onClick={() => { setActiveTab(tab); setMobileMenuOpen(false); }}
+                      className={`nav-tab${activeTab === tab ? ' active' : ''}`}
+                    >
+                      <span className="tab-label">{tab}</span>
+                    </button>
+                  ))}
+                  <div className="mobile-profile">
+                    <div className="avatar">MD</div>
+                    <div className="profile-details">
+                      <div style={{ fontSize: '14px', fontWeight: '500', color: '#1e293b' }}>
+                        Maretta Daniel
+                      </div>
+                      <div style={{ fontSize: '12px', color: '#64748b' }}>
+                        danielmaretta@mail.com
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+          {/* DESKTOP: як було */}
+          <div className="header-desktop">
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <div style={{
+                background: '#2563eb',
+                color: '#fff',
+                width: '32px',
+                height: '32px',
+                borderRadius: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '16px',
+                fontWeight: 'bold'
+              }}>
+                F
+              </div>
+              <span style={{ 
+                fontSize: '20px', 
+                fontWeight: '600', 
+                color: '#1e293b'
+              }}>
+                Fingoals
+              </span>
+            </div>
+            <div className="header-nav-profile">
+              <div className="desktop-nav-tabs">
+                <div className="nav-tabs">
+                  {navTabs.map((tab, idx) => (
+                    <button
+                      key={tab}
+                      onClick={() => setActiveTab(tab)}
+                      className={`nav-tab${activeTab === tab ? ' active' : ''}`}
+                    >
+                      <span className="tab-label">{tab}</span>
+                    </button>
+                  ))}
+                </div>
+                <div className="profile-info">
+                  <span className="header-icon"><SettingsIcon /></span>
+                  <span className="header-icon notification-icon"><NotificationsIcon /></span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <div className="avatar">MD</div>
+                    <div className="profile-details">
+                      <div style={{ fontSize: '14px', fontWeight: '500', color: '#1e293b' }}>
+                        Maretta Daniel
+                      </div>
+                      <div style={{ fontSize: '12px', color: '#64748b' }}>
+                        danielmaretta@mail.com
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -157,49 +255,23 @@ function HomePage() {
             }}>
               HOME
             </h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                padding: '12px 16px',
-                background: '#1e293b',
-                borderRadius: '8px',
-                color: '#fff'
-              }}>
-                <span>{Icons.box}</span>
-                <span style={{ fontSize: '14px', fontWeight: '500' }}>Overview</span>
-                <span style={{ marginLeft: 'auto' }}>{Icons.arrowDown}</span>
+            <div className="sidebar-list">
+              <div className="sidebar-item active">
+                <span className="sidebar-icon"><HomeIcon /></span>
+                <span className="sidebar-label">Overview</span>
+                <span className="sidebar-arrow"><ArrowDownIcon /></span>
               </div>
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                padding: '12px 16px',
-                color: '#64748b'
-              }}>
-                <span>{Icons.document}</span>
-                <span style={{ fontSize: '14px' }}>Legacy Statement</span>
+              <div className="sidebar-item">
+                <span className="sidebar-icon"><DocumentIcon /></span>
+                <span className="sidebar-label">Legacy Statement</span>
               </div>
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                padding: '12px 16px',
-                color: '#64748b'
-              }}>
-                <span>{Icons.chart}</span>
-                <span style={{ fontSize: '14px' }}>Financial Projection</span>
+              <div className="sidebar-item">
+                <span className="sidebar-icon"><ChartIcon /></span>
+                <span className="sidebar-label">Financial Projection</span>
               </div>
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                padding: '12px 16px',
-                color: '#64748b'
-              }}>
-                <span>{Icons.person}</span>
-                <span style={{ fontSize: '14px' }}>Account</span>
+              <div className="sidebar-item">
+                <span className="sidebar-icon"><PersonIcon /></span>
+                <span className="sidebar-label">Account</span>
               </div>
             </div>
           </div>
@@ -222,19 +294,7 @@ function HomePage() {
               }}>
                 POCKET
               </h3>
-              <span style={{ 
-                background: '#2563eb', 
-                color: '#fff',
-                borderRadius: '50%',
-                width: '20px',
-                height: '20px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '12px'
-              }}>
-                {Icons.plus}
-              </span>
+              <span className="sidebar-plus"><PlusOnlyIcon /></span>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               <div style={{
@@ -244,7 +304,7 @@ function HomePage() {
                 padding: '12px 16px',
                 color: '#64748b'
               }}>
-                <span>{Icons.piggy}</span>
+                <span className="sidebar-icon"><PiggyIcon /></span>
                 <span style={{ fontSize: '14px' }}>Married Savings</span>
               </div>
               <div style={{
@@ -254,7 +314,7 @@ function HomePage() {
                 padding: '12px 16px',
                 color: '#64748b'
               }}>
-                <span>{Icons.house}</span>
+                <span className="sidebar-icon"><HouseIcon /></span>
                 <span style={{ fontSize: '14px' }}>Emergency Funds</span>
               </div>
       </div>
@@ -274,27 +334,16 @@ function HomePage() {
               gap: '12px',
               marginBottom: '12px'
             }}>
-              <span style={{ fontSize: '24px' }}>{Icons.thumbsUp}</span>
+              <span className="sidebar-key"><KeyIcon /></span>
               <div>
                 <div style={{ fontSize: '14px', fontWeight: '600' }}>Unlock full version</div>
                 <div style={{ fontSize: '12px', opacity: '0.8' }}>20+ matrixs</div>
               </div>
             </div>
-            <button style={{
-              background: '#fff',
-              color: '#2563eb',
-              border: 'none',
-              borderRadius: '8px',
-              padding: '10px 16px',
-              fontSize: '14px',
-              fontWeight: '600',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px'
-            }}>
-              14 day free-trial {Icons.arrow}
-            </button>
+            <div className="trial-btn-group">
+              <button className="trial-btn">14 day free-trial</button>
+              <button className="trial-external-btn"><ExternalLinkIcon /></button>
+            </div>
           </div>
       </div>
 
@@ -326,40 +375,17 @@ function HomePage() {
     </div>
             
             <div className="action-buttons">
-              <select style={{
-                padding: '8px 12px',
-                borderRadius: '6px',
-                border: '1px solid #d1d5db',
-                background: '#fff',
-                fontSize: '14px'
-              }}>
-                <option>Default View</option>
-              </select>
-              <button style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                padding: '8px 12px',
-                borderRadius: '6px',
-                border: '1px solid #d1d5db',
-                background: '#fff',
-                fontSize: '14px',
-                cursor: 'pointer'
-              }}>
-                {Icons.download} Export
+              <Dropdown
+                options={["Default View", "Monthly", "Weekly"]}
+                value={defaultViewValue}
+                onChange={setDefaultViewValue}
+                className="custom-dropdown"
+              />
+              <button className="overview-tab">
+                <DownloadIcon /> Export
               </button>
-              <button style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                padding: '8px 12px',
-                borderRadius: '6px',
-                border: '1px solid #d1d5db',
-                background: '#fff',
-                fontSize: '14px',
-                cursor: 'pointer'
-              }}>
-                {Icons.filter} Filter
+              <button className="overview-tab">
+                <FilterIcon /> Filter
               </button>
             </div>
     </div>
@@ -373,75 +399,48 @@ function HomePage() {
                 <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#1e293b', margin: '0' }}>
                   Expense Breakdown
                 </h3>
-                <select 
-                  value={expensePeriod}
-                  onChange={(e) => setExpensePeriod(e.target.value)}
-                  style={{
-                    padding: '4px 8px',
-                    borderRadius: '4px',
-                    border: '1px solid #d1d5db',
-                    fontSize: '12px'
-                  }}
-                >
-                  <option>Weekly</option>
-                  <option>Monthly</option>
-                </select>
+                <div className="weekly-group">
+                  <Dropdown
+                    options={["Weekly", "Monthly"]}
+                    value={expensePeriod}
+                    onChange={setExpensePeriod}
+                    className="custom-dropdown"
+                  />
+                  <button className="weekly-external-btn">
+                    <ExternalLinkIcon />
+                  </button>
+                </div>
               </div>
               
-              <div style={{ fontSize: '24px', fontWeight: '700', color: '#1e293b', marginBottom: '16px' }}>
-                $ 17,3K
-              </div>
-
-              {/* Легенда */}
-              <div className="legend">
-                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px' }}>
-                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#2563eb' }}></div>
-                  $1-$100
+              <div className="expense-breakdown-top">
+                <div className="expense-breakdown-top-left">
+                  <div className="expense-amount">$ 17,3K</div>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px' }}>
-                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#1e293b' }}></div>
-                  $100-$300
+                <div className="legend">
+                  <div className="legend-item"><span className="legend-dot legend-dot-blue"></span>$1-$100</div>
+                  <div className="legend-item"><span className="legend-dot legend-dot-black"></span>$100-$300</div>
+                  <div className="legend-item"><span className="legend-dot legend-dot-gray"></span>&gt;$300</div>
+                  <div className="legend-item"><span className="legend-dot legend-dot-empty"></span>No Expense</div>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px' }}>
-                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#64748b' }}></div>
-                  &gt;$300
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px' }}>
-                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#f1f5f9' }}></div>
-                  No Expenses
-                </div>
-              </div>
-
-              {/* Категорії */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '16px' }}>
-                <div style={{ fontSize: '14px', color: '#64748b' }}>Groceries</div>
-                <div style={{ fontSize: '14px', color: '#64748b' }}>Fashion</div>
-                <div style={{ fontSize: '14px', color: '#64748b' }}>Electronics</div>
               </div>
 
               {/* Сітка днів */}
-              <div style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(7, 1fr)',
-                gap: '4px'
-              }}>
-                {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, index) => (
-                  <div key={day} style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    gap: '4px'
-                  }}>
-                    <div style={{ fontSize: '10px', color: '#64748b' }}>{day}</div>
-                    <div style={{
-                      width: '16px',
-                      height: '16px',
-                      borderRadius: '50%',
-                      background: index % 3 === 0 ? '#2563eb' : index % 3 === 1 ? '#1e293b' : '#64748b'
-                    }}></div>
+              <div className="expense-breakdown-grid">
+                {expenseCategories.map((cat, rowIdx) => (
+                  <div className="expense-breakdown-row" key={cat}>
+                    <div className="expense-breakdown-cat">{cat}</div>
+                    {expenseData[rowIdx].map((type, colIdx) => (
+                      <div key={colIdx} className={`expense-dot ${type}`}></div>
+                    ))}
                   </div>
-        ))}
-      </div>
+                ))}
+                <div className="expense-breakdown-days">
+                  <div></div>
+                  {weekDays.map((day) => (
+                    <div key={day} className="expense-breakdown-day">{day}</div>
+                  ))}
+                </div>
+              </div>
             </div>
 
             {/* Права колонка з трьома картками */}
@@ -538,7 +537,7 @@ function HomePage() {
                     justifyContent: 'space-between',
                     marginBottom: '12px'
                   }}>
-                    <span style={{ fontSize: '16px', cursor: 'pointer' }}>{Icons.close}</span>
+                    <span style={{ fontSize: '16px', cursor: 'pointer' }}><CloseIcon /></span>
                     <span style={{ fontSize: '16px' }}>{Icons.document}</span>
                     <span style={{ fontSize: '16px' }}>{Icons.arrow}</span>
                   </div>
@@ -558,109 +557,80 @@ function HomePage() {
             
             {/* Income Sources - 3/4 ширини */}
             <div className="card income-sources-card">
-              <div className="card-header">
+              <div className="income-sources-header">
                 <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#1e293b', margin: '0' }}>
                   Income Sources
                 </h3>
-                <select 
-                  value={incomePeriod}
-                  onChange={(e) => setIncomePeriod(e.target.value)}
-                  style={{
-                    padding: '4px 8px',
-                    borderRadius: '4px',
-                    border: '1px solid #d1d5db',
-                    fontSize: '12px'
-                  }}
-                >
-                  <option>30 Days</option>
-                  <option>60 Days</option>
-                </select>
+                <div className="select-group">
+                  <Dropdown
+                    options={["Sort by Month", "Sort by Week"]}
+                    value={sortByValue}
+                    onChange={setSortByValue}
+                    className="custom-dropdown"
+                  />
+                  <Dropdown
+                    options={["All Sources", "Salary", "Freelance", "Bonus", "Another job"]}
+                    value={allSourcesValue}
+                    onChange={setAllSourcesValue}
+                    className="custom-dropdown custom-dropdown--black-hover"
+                    activeClassName={allSourcesValue === 'All Sources' ? 'all-sources-active' : ''}
+                  />
+                  <button className="more-btn"><MoreIcon /></button>
+                </div>
               </div>
               
-              <div style={{ fontSize: '24px', fontWeight: '700', color: '#1e293b', marginBottom: '8px' }}>
-                $ 7,72K
-              </div>
-              <div style={{ fontSize: '14px', color: '#64748b', marginBottom: '16px' }}>
-                Income Sources Statistic in a month
-              </div>
-
-              {/* Легенда */}
-              <div className="legend">
-                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px' }}>
-                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#2563eb' }}></div>
-                  Salary
+              <div className="income-sources-content">
+                <div className="income-sources-left">
+                  <button className="days-btn">30 Days</button>
+                  <div className="income-amount">$ 7,72K</div>
+                  <div className="legend-title">Income sources</div>
+                  <div className="income-sources-subtitle">Statistic in a month</div>
+                  <div className="legend">
+                    <div className="legend-item"><span className="legend-dot salary"></span>Salary</div>
+                    <div className="legend-item"><span className="legend-dot freelance"></span>Freelance</div>
+                    <div className="legend-item"><span className="legend-dot bonus"></span>Bonus</div>
+                    <div className="legend-item"><span className="legend-dot another"></span>Another job</div>
+                  </div>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px' }}>
-                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#1e293b' }}></div>
-                  Freelance
-        </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px' }}>
-                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#64748b' }}></div>
-                  Bonus
-        </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px' }}>
-                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#f1f5f9' }}></div>
-                  Another job
-        </div>
-        </div>
+                <div className="income-sources-right">
+                  <div className="income-growth-label growth-label-vertical">
+                    <span className="growth-badge">
+                      <span className="growth-badge-icon">
+                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M7 11V3" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
+                          <path d="M7 3L3.5 6.5" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
+                          <path d="M7 3L10.5 6.5" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
+                        </svg>
+                      </span>
+                      +73,6%
+                    </span>
+                    <span className="growth-label-text">better than last month</span>
+                    <span className="income-growth-arrow">
+                      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M16 28V10" stroke="#16a34a" strokeWidth="2" strokeLinecap="round"/>
+                        <path d="M16 10L12 14" stroke="#16a34a" strokeWidth="2" strokeLinecap="round"/>
+                        <path d="M16 10L20 14" stroke="#16a34a" strokeWidth="2" strokeLinecap="round"/>
+                      </svg>
+                    </span>
+                  </div>
+                  <div className="income-bar-chart">
+                    <div className="bar bar1">
+                      <div className="bar-label"><span className="bar-label-icon"><ExternalLinkIcon /></span>12K</div>
+                    </div>
+                    <div className="bar bar2">
+                      <div className="bar-label"><span className="bar-label-icon"><ExternalLinkIcon /></span>8.1K</div>
+                    </div>
+                    <div className="bar bar3">
+                      <div className="bar-label"><span className="bar-label-icon"><ExternalLinkIcon /></span>7.1K</div>
+                    </div>
+                    <div className="bar bar4">
+                      <div className="bar-label"><span className="bar-label-icon"><ExternalLinkIcon /></span>5.6K</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-              {/* Стовпчаста діаграма */}
-              <div style={{
-                display: 'flex',
-                alignItems: 'end',
-                gap: '8px',
-                height: '80px',
-                marginBottom: '12px'
-              }}>
-                <div style={{
-                  width: '20px',
-                  height: '60px',
-                  background: '#64748b',
-                  borderRadius: '4px 4px 0 0'
-                }}></div>
-                <div style={{
-                  width: '20px',
-                  height: '40px',
-                  background: '#2563eb',
-                  borderRadius: '4px 4px 0 0'
-                }}></div>
-                <div style={{
-                  width: '20px',
-                  height: '80px',
-                  background: '#1e40af',
-                  borderRadius: '4px 4px 0 0'
-                }}></div>
-                <div style={{
-                  width: '20px',
-                  height: '50px',
-                  background: '#3b82f6',
-                  borderRadius: '4px 4px 0 0'
-                }}></div>
-    </div>
-
-              <div style={{ fontSize: '14px', color: '#16a34a', fontWeight: '600', marginBottom: '12px' }}>
-                +73,6% better than last month
-          </div>
-
-              <div className="select-group">
-                <select style={{
-                  padding: '4px 8px',
-                  borderRadius: '4px',
-                  border: '1px solid #d1d5db',
-                  fontSize: '12px'
-                }}>
-                  <option>Sort by Month</option>
-                </select>
-                <select style={{
-                  padding: '4px 8px',
-                  borderRadius: '4px',
-                  border: '1px solid #d1d5db',
-                  fontSize: '12px'
-                }}>
-                  <option>All Sources</option>
-                </select>
-        </div>
-      </div>
+            </div>
 
             {/* Financial Balance - 1/4 ширини */}
             <div className="card financial-balance-card">
@@ -668,19 +638,12 @@ function HomePage() {
                 <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#1e293b', margin: '0' }}>
                   Financial Balance
                 </h3>
-                <select 
+                <Dropdown
+                  options={["For Week", "For Month"]}
                   value={balancePeriod}
-                  onChange={(e) => setBalancePeriod(e.target.value)}
-                  style={{
-                    padding: '4px 8px',
-                    borderRadius: '4px',
-                    border: '1px solid #d1d5db',
-                    fontSize: '12px'
-                  }}
-                >
-                  <option>For Week</option>
-                  <option>For Month</option>
-                </select>
+                  onChange={setBalancePeriod}
+                  className="custom-dropdown"
+                />
       </div>
 
               {/* Легенда */}
