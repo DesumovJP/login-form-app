@@ -345,6 +345,7 @@ body {
   grid-template-columns: 1fr 1fr;
   gap: 24px;
   margin-bottom: 24px;
+  align-items: stretch;
 }
 
 /* Картка Expense Breakdown на всю висоту */
@@ -357,6 +358,8 @@ body {
   display: flex;
   flex-direction: column;
   gap: 24px;
+  height: 100%;
+  grid-row: 1 / 3;
 }
 
 /* Нижня сітка з двома картками */
@@ -371,7 +374,7 @@ body {
   display: grid;
   grid-template-columns: 3fr 1fr;
   gap: 24px;
-  margin-bottom: 24px;
+  align-items: stretch;
 }
 
 /* Картка Income Sources */
@@ -383,7 +386,9 @@ body {
 
 /* Картка Financial Balance */
 .financial-balance-card {
-  /* 1/4 ширини - вже встановлено через grid-template-columns */
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .income-sources-header {
@@ -403,15 +408,54 @@ body {
 /* Напівкругла діаграма */
 .half-circle-chart {
   width: 100%;
-  height: 120px;
+  height: 140px;
   margin-bottom: 12px;
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
 }
 
-.half-circle-chart svg {
-  animation: chartAppear 1s ease-out;
+.half-circle-progress {
+  width: 280px;
+  height: 140px;
+  border: 20px solid #e2e8f0;
+  border-bottom: none;
+  border-radius: 200px 200px 0 0;
+  position: relative;
+}
+
+.half-circle-filled {
+  position: absolute;
+  top: -20px;
+  left: -20px;
+  width: 280px;
+  height: 140px;
+  border: 20px solid #2563eb;
+  border-bottom: none;
+  border-radius: 200px 200px 0 0;
+  clip-path: polygon(0 0, 22% 0, 22% 100%, 0 100%);
+}
+
+.half-circle-text {
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 2;
+}
+
+.half-circle-text .percentage {
+  font-size: 28px;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 7px;
+}
+
+.half-circle-text .description {
+  font-size: 16px;
+  color: #64748b;
 }
 
 .half-circle-progress {
@@ -457,6 +501,28 @@ body {
   
   .income-balance-grid {
     gap: 20px;
+  }
+  
+  .half-circle-progress {
+    width: 240px;
+    height: 120px;
+    border: 18px solid #e2e8f0;
+    border-radius: 170px 170px 0 0;
+  }
+  
+  .half-circle-filled {
+    width: 240px;
+    height: 120px;
+    border: 18px solid #2563eb;
+    border-radius: 170px 170px 0 0;
+  }
+  
+  .half-circle-text .percentage {
+    font-size: 26px;
+  }
+  
+  .half-circle-text .description {
+    font-size: 15px;
   }
   
   .header-content {
@@ -531,9 +597,26 @@ body {
     height: 100px;
   }
   
-  .half-circle-chart svg {
-    width: 100px;
-    height: 50px;
+  .half-circle-progress {
+    width: 200px;
+    height: 100px;
+    border: 15px solid #e2e8f0;
+    border-radius: 140px 140px 0 0;
+  }
+  
+  .half-circle-filled {
+    width: 200px;
+    height: 100px;
+    border: 15px solid #2563eb;
+    border-radius: 140px 140px 0 0;
+  }
+  
+  .half-circle-text .percentage {
+    font-size: 20px;
+  }
+  
+  .half-circle-text .description {
+    font-size: 12px;
   }
 }
 
@@ -562,9 +645,26 @@ body {
     height: 80px;
   }
   
-  .half-circle-chart svg {
-    width: 80px;
-    height: 40px;
+  .half-circle-progress {
+    width: 160px;
+    height: 80px;
+    border: 12px solid #e2e8f0;
+    border-radius: 110px 110px 0 0;
+  }
+  
+  .half-circle-filled {
+    width: 160px;
+    height: 80px;
+    border: 12px solid #2563eb;
+    border-radius: 110px 110px 0 0;
+  }
+  
+  .half-circle-text .percentage {
+    font-size: 16px;
+  }
+  
+  .half-circle-text .description {
+    font-size: 10px;
   }
 }
 
@@ -887,15 +987,18 @@ body {
 .expense-breakdown-cat {
   font-size: 14px;
   color: #64748b;
-  text-align: left;
+  text-align: center;
   font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
   font-weight: 500;
   letter-spacing: 0.01em;
   padding-right: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .expense-dot {
-  width: 22px;
-  height: 22px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   margin: 0 auto;
   display: block;
@@ -906,8 +1009,8 @@ body {
 }
 @media (max-width: 700px) {
   .expense-dot {
-    width: 16px;
-    height: 16px;
+    width: 40px;
+    height: 40px;
   }
 }
 .expense-dot.gray {
@@ -1013,7 +1116,14 @@ body {
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s;
+  transition: background 0.2s, color 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+.trial-btn:hover {
+  background: #fff;
+  color: #000;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 .trial-external-btn {
   background: #fff;
@@ -1025,7 +1135,7 @@ body {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
   box-shadow: 0 1px 4px rgba(0,0,0,0.04);
 }
 .trial-external-btn svg {
@@ -1036,6 +1146,8 @@ body {
 }
 .trial-external-btn:hover {
   background: #000;
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 .trial-external-btn:hover svg {
   color: #fff;
@@ -1076,6 +1188,11 @@ body {
   align-items: center;
   justify-content: center;
   font-size: 16px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.sidebar-plus:hover {
+  background: #000;
 }
 .sidebar-plus svg {
   color: #fff;
@@ -1148,14 +1265,20 @@ body {
   background: #fff;
   border: 1.5px solid #cbd5e1;
   border-radius: 50%;
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  min-height: 40px;
+  max-width: 40px;
+  max-height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: background 0.2s, border 0.2s;
   margin-left: 6px;
+  box-shadow: 0 1px 4px rgba(30,41,59,0.04);
+  padding: 0;
 }
 .more-btn svg {
   color: #111827;
@@ -1325,6 +1448,29 @@ body {
 .bar2 { height: 40%; background: #2563eb; }
 .bar3 { height: 80%; background: #1e40af; }
 .bar4 { height: 50%; background: #3b82f6; }
+
+/* Hover effects for income source bars */
+.bar:hover {
+  transform: scale(1.05);
+  transition: transform 0.2s ease, background 0.2s ease;
+  cursor: pointer;
+}
+
+.bar1:hover {
+  background: #475569 !important;
+}
+
+.bar2:hover {
+  background: #1d4ed8 !important;
+}
+
+.bar3:hover {
+  background: #1e3a8a !important;
+}
+
+.bar4:hover {
+  background: #2563eb !important;
+}
 .income-bar-labels {
   display: flex;
   gap: 12px;
@@ -1401,17 +1547,18 @@ body {
   color: #111827;
   border: 1.2px solid #e5e7eb;
   border-radius: 12px;
-  padding: 7px 30px 7px 14px;
+  padding: 7px 18px;
   font-size: 15px;
   font-weight: 500;
   cursor: pointer;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: 8px;
   transition: background 0.2s, color 0.2s, border 0.2s;
   box-shadow: 0 1px 4px rgba(30,41,59,0.04);
   position: relative;
+  text-align: center;
 }
 .custom-dropdown-btn.open, .custom-dropdown-btn:hover, .custom-dropdown-btn:focus {
   background: #f1f5f9;
@@ -1419,7 +1566,7 @@ body {
   border-color: #cbd5e1;
 }
 .custom-dropdown-btn svg {
-  margin-left: 8px;
+  margin-left: 0;
   transition: transform 0.2s;
   stroke: #64748b;
 }
@@ -1490,10 +1637,14 @@ body {
   background: #f1f5f9;
   color: #111827;
 }
+.weekly-dropdown .custom-dropdown-btn {
+  height: 100%;
+  border-radius: 50px;
+}
 .weekly-external-btn {
   background: #fff;
   border: 1.2px solid #e5e7eb;
-  border-radius: 12px;
+  border-radius: 50%;
   width: 40px;
   min-width: 40px;
   max-width: 40px;
@@ -1504,7 +1655,7 @@ body {
   justify-content: center;
   cursor: pointer;
   box-shadow: 0 1px 4px rgba(30,41,59,0.04);
-  transition: background 0.2s, border 0.2s;
+  transition: background 0.2s, border 0.2s, transform 0.2s, box-shadow 0.2s;
   margin-left: 2px;
   padding: 0;
 }
@@ -1517,6 +1668,8 @@ body {
 .weekly-external-btn:hover {
   background: #2563eb;
   border-color: #2563eb;
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
 }
 .weekly-external-btn:hover svg {
   color: #fff;
@@ -1832,8 +1985,8 @@ body {
 }
 
 .expense-dot {
-  width: 22px;
-  height: 22px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   margin: 0 auto;
   display: block;
@@ -1844,7 +1997,280 @@ body {
 }
 @media (max-width: 700px) {
   .expense-dot {
-    width: 16px;
-    height: 16px;
+    width: 40px;
+    height: 40px;
   }
+}
+
+.sort-dropdown .custom-dropdown-btn {
+  height: 40px;
+  font-weight: 700;
+  color: #111827;
+  background: #fff;
+  text-align: center;
+  border-radius: 50px;
+}
+.sort-dropdown .custom-dropdown-btn.open, .sort-dropdown .custom-dropdown-btn:hover, .sort-dropdown .custom-dropdown-btn:focus {
+  background: #000;
+  color: #fff;
+}
+.default-view-dropdown .custom-dropdown-btn,
+.for-week-dropdown .custom-dropdown-btn {
+  height: 40px;
+  border-radius: 50px;
+}
+
+.all-sources-dropdown .custom-dropdown-btn {
+  height: 40px;
+  border-radius: 50px;
+}
+.export-btn,
+.filter-btn {
+  background: #fff;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 50px;
+  height: 40px;
+  min-width: 40px;
+  min-height: 40px;
+  max-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: background 0.2s, border 0.2s;
+  margin-left: 6px;
+  box-shadow: 0 1px 4px rgba(30,41,59,0.04);
+  padding: 7px 18px;
+  font-size: 15px;
+  font-weight: 700;
+}
+.export-btn svg,
+.filter-btn svg {
+  width: 18px;
+  height: 18px;
+  margin-left: 0;
+}
+
+.join-class-btn {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  height: 40px;
+  padding: 0 22px;
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+  box-shadow: 0 1px 4px rgba(30,41,59,0.08);
+  gap: 8px;
+}
+.join-class-btn:hover, .join-class-btn:focus {
+  background: #174ea6;
+}
+.join-class-external-btn {
+  background: #2563eb;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  min-width: 40px;
+  max-width: 40px;
+  height: 40px;
+  min-height: 40px;
+  max-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(30,41,59,0.08);
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+  padding: 0;
+  margin-left: 6px;
+}
+.join-class-external-btn svg {
+  color: #fff;
+  width: 18px;
+  height: 18px;
+  transition: color 0.2s;
+}
+.join-class-external-btn:hover {
+  background: #174ea6;
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(23, 78, 166, 0.3);
+}
+
+.discount-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #bbf7d0;
+  color: #15803d;
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  min-height: 32px;
+  box-shadow: 0 1px 4px rgba(34,197,94,0.10);
+  padding: 3px;
+}
+
+.today-dropdown-btn {
+  width: 40px;
+  min-width: 40px;
+  max-width: 40px;
+  height: 40px;
+  min-height: 40px;
+  max-height: 40px;
+  border-radius: 50%;
+  background: #fff;
+  border: 1.5px solid #1e293b;
+  color: #1e293b;
+  box-shadow: 0 1px 4px rgba(30,41,59,0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  font-size: 15px;
+  transition: background 0.2s, color 0.2s, border 0.2s;
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  cursor: pointer;
+}
+.today-dropdown-btn:hover, .today-dropdown-btn:focus {
+  background: #f1f5f9;
+  color: #1e293b;
+  border-color: #1e293b;
+}
+.today-dropdown-btn svg {
+  color: #1e293b;
+  width: 18px;
+  height: 18px;
+  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translate(0, 0);
+}
+.today-dropdown-btn:hover svg, .today-dropdown-btn:focus svg {
+  color: #1e293b;
+}
+
+.small-arrow-circle {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 4px rgba(30,41,59,0.08);
+}
+.small-arrow-circle svg {
+  width: 12px;
+  height: 12px;
+  color: #1e293b;
+}
+
+.bottom-right-arrow-circle {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 4px rgba(30,41,59,0.08);
+  cursor: pointer;
+}
+.bottom-right-arrow-circle svg {
+  width: 16px;
+  height: 16px;
+  color: #1e293b;
+}
+
+.white-circle-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 4px rgba(30,41,59,0.08);
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+.white-circle-icon:hover {
+  background: #f3f4f6;
+  box-shadow: 0 4px 12px rgba(30,41,59,0.15);
+  border-color: #2563eb;
+}
+.white-circle-icon svg {
+  width: 18px;
+  height: 18px;
+  color: #1e293b;
+  transition: color 0.2s;
+}
+
+.white-circle-icon:hover svg {
+  color: #2563eb;
+}
+
+.gray-circle-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #374151;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 4px rgba(30,41,59,0.08);
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+.gray-circle-icon:hover {
+  background: #4b5563;
+  box-shadow: 0 4px 12px rgba(55, 65, 81, 0.3);
+}
+.gray-circle-icon svg {
+  width: 18px;
+  height: 18px;
+  color: #fff;
+  transition: color 0.2s;
+}
+
+.gray-circle-icon:hover svg {
+  color: #fff;
+}
+
+.track-print-label {
+  display: inline-block;
+  background: #374151;
+  color: #fff;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.financial-report-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 0;
+  margin-top: 8px;
+  line-height: 1.2;
 }

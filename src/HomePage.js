@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './App.css';
 import HomeIcon from './icons/HomeIcon';
 import DocumentIcon from './icons/DocumentIcon';
@@ -42,6 +43,7 @@ const Icons = {
 };
 
 function HomePage() {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('Dashboard');
   const [expensePeriod, setExpensePeriod] = useState('Weekly');
   const [incomePeriod, setIncomePeriod] = useState('30 Days');
@@ -105,7 +107,18 @@ function HomePage() {
               </button>
             </div>
             <div className="mobile-logo-center">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <div 
+                style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  gap: '12px',
+                  cursor: 'pointer',
+                  transition: 'opacity 0.2s'
+                }}
+                onClick={() => navigate('/login')}
+                onMouseEnter={(e) => e.target.style.opacity = '0.7'}
+                onMouseLeave={(e) => e.target.style.opacity = '1'}
+              >
                 <div style={{
                   background: '#2563eb',
                   color: '#fff',
@@ -162,7 +175,18 @@ function HomePage() {
           </div>
           {/* DESKTOP: як було */}
           <div className="header-desktop">
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div 
+              style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: '12px',
+                cursor: 'pointer',
+                transition: 'opacity 0.2s'
+              }}
+              onClick={() => navigate('/login')}
+              onMouseEnter={(e) => e.target.style.opacity = '0.7'}
+              onMouseLeave={(e) => e.target.style.opacity = '1'}
+            >
               <div style={{
                 background: '#2563eb',
                 color: '#fff',
@@ -296,28 +320,16 @@ function HomePage() {
               </h3>
               <span className="sidebar-plus"><PlusOnlyIcon /></span>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                padding: '12px 16px',
-                color: '#64748b'
-              }}>
+            <div className="sidebar-list">
+              <div className="sidebar-item">
                 <span className="sidebar-icon"><PiggyIcon /></span>
-                <span style={{ fontSize: '14px' }}>Married Savings</span>
+                <span className="sidebar-label">Married Savings</span>
               </div>
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                padding: '12px 16px',
-                color: '#64748b'
-              }}>
+              <div className="sidebar-item">
                 <span className="sidebar-icon"><HouseIcon /></span>
-                <span style={{ fontSize: '14px' }}>Emergency Funds</span>
+                <span className="sidebar-label">Emergency Funds</span>
               </div>
-      </div>
+            </div>
     </div>
 
           {/* Нижня картка */}
@@ -379,12 +391,12 @@ function HomePage() {
                 options={["Default View", "Monthly", "Weekly"]}
                 value={defaultViewValue}
                 onChange={setDefaultViewValue}
-                className="custom-dropdown"
+                className="custom-dropdown default-view-dropdown"
               />
-              <button className="overview-tab">
+              <button className="overview-tab export-btn">
                 <DownloadIcon /> Export
               </button>
-              <button className="overview-tab">
+              <button className="overview-tab filter-btn">
                 <FilterIcon /> Filter
               </button>
             </div>
@@ -394,7 +406,7 @@ function HomePage() {
           <div className="cards-grid">
             
             {/* Expense Breakdown - ліва колонка на всю висоту */}
-            <div className="card expense-breakdown-card">
+            <div className="card expense-breakdown-card" style={{ display: 'flex', flexDirection: 'column' }}>
               <div className="card-header">
                 <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#1e293b', margin: '0' }}>
                   Expense Breakdown
@@ -404,7 +416,7 @@ function HomePage() {
                     options={["Weekly", "Monthly"]}
                     value={expensePeriod}
                     onChange={setExpensePeriod}
-                    className="custom-dropdown"
+                    className="custom-dropdown weekly-dropdown"
                   />
                   <button className="weekly-external-btn">
                     <ExternalLinkIcon />
@@ -425,15 +437,17 @@ function HomePage() {
               </div>
 
               {/* Сітка днів */}
-              <div className="expense-breakdown-grid">
-                {expenseCategories.map((cat, rowIdx) => (
-                  <div className="expense-breakdown-row" key={cat}>
-                    <div className="expense-breakdown-cat">{cat}</div>
-                    {expenseData[rowIdx].map((type, colIdx) => (
-                      <div key={colIdx} className={`expense-dot ${type}`}></div>
-                    ))}
-                  </div>
-                ))}
+              <div className="expense-breakdown-grid" style={{ marginTop: '16px', flex: '1', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                <div style={{ flex: '1', display: 'flex', flexDirection: 'column', justifyContent: 'space-around' }}>
+                  {expenseCategories.map((cat, rowIdx) => (
+                    <div className="expense-breakdown-row" key={cat}>
+                      <div className="expense-breakdown-cat">{cat}</div>
+                      {expenseData[rowIdx].map((type, colIdx) => (
+                        <div key={colIdx} className={`expense-dot ${type}`}></div>
+                      ))}
+                    </div>
+                  ))}
+                </div>
                 <div className="expense-breakdown-days">
                   <div></div>
                   {weekDays.map((day) => (
@@ -449,10 +463,11 @@ function HomePage() {
               <div style={{
                 background: 'linear-gradient(135deg, #1e293b 0%, #334155 100%)',
                 borderRadius: '12px',
-                padding: '24px',
+                padding: '32px',
                 color: '#fff',
                 position: 'relative',
-                overflow: 'hidden'
+                overflow: 'hidden',
+                minHeight: '200px'
               }} className="card">
                 <div style={{
                   position: 'absolute',
@@ -473,84 +488,122 @@ function HomePage() {
                   borderRadius: '50%'
                 }}></div>
                 
-                <h3 style={{ fontSize: '16px', fontWeight: '600', margin: '0 0 8px 0' }}>
-                  Join Our Financial Class Mastery
+                <h3 style={{ fontSize: '28px', fontWeight: 800, margin: '0 0 8px 0', lineHeight: '1.1', letterSpacing: '-0.5px' }}>
+                  Join Our Financial<br />
+                  <span style={{ fontWeight: 900 }}>Class Mastery</span>
                 </h3>
-                <div style={{ fontSize: '14px', opacity: '0.8', marginBottom: '16px' }}>
-                  +15% discount for member
-                </div>
-                <button style={{
-                  background: '#2563eb',
-                  color: '#fff',
-                  border: 'none',
-                  borderRadius: '8px',
-                  padding: '10px 16px',
-                  fontSize: '14px',
-                  fontWeight: '600',
-                  cursor: 'pointer',
+                <div style={{
+                  position: 'absolute',
+                  left: 24,
+                  bottom: 24,
+                  fontSize: '15px',
+                  opacity: 0.85,
+                  fontWeight: 600,
                   display: 'flex',
                   alignItems: 'center',
                   gap: '8px'
                 }}>
-                  Join Class {Icons.arrow}
-                </button>
+                  <span className="discount-badge">+15%</span> discount for member
+                </div>
+                <div style={{
+                  position: 'absolute',
+                  right: 24,
+                  bottom: 24,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}>
+                  <button className="join-class-btn">
+                    Join Class
+                  </button>
+                  <button className="join-class-external-btn">
+                    <ExternalLinkIcon />
+                  </button>
+                </div>
               </div>
 
               {/* Нижня сітка з двома картками */}
               <div className="bottom-cards-grid">
                 {/* Today Received */}
-                <div className="card" style={{ position: 'relative' }}>
-                  <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#1e293b', margin: '0 0 8px 0' }}>
-                    Today Received
-                  </h3>
-                  <div style={{ fontSize: '24px', fontWeight: '700', color: '#1e293b', marginBottom: '8px' }}>
-                    $ 532,921
+                <div className="card today-received-card" style={{ position: 'relative', minHeight: '110px', padding: '32px' }}>
+                  <button className="today-dropdown-btn">
+                    <ArrowDownIcon />
+                  </button>
+                  <div style={{ 
+                    position: 'absolute',
+                    top: '16px',
+                    left: '60px'
+                  }}>
+                    <div style={{ fontSize: '15px', fontWeight: 600, color: '#64748b', marginBottom: '0' }}>Today</div>
+                    <div style={{ fontSize: '18px', fontWeight: 700, color: '#1e293b', marginTop: '2px' }}>Received</div>
                   </div>
                   <div style={{ 
+                    position: 'absolute',
+                    top: '60px',
+                    left: '16px',
                     display: 'flex', 
-                    alignItems: 'center', 
-                    gap: '4px',
-                    fontSize: '14px',
-                    color: '#ef4444'
+                    flexDirection: 'column',
+                    gap: '12px'
                   }}>
-                    {Icons.arrowDown} 12%
+                    <div style={{ fontSize: '28px', fontWeight: '800', color: '#1e293b' }}>
+                      $ 532,921
+                    </div>
                   </div>
-                  <div style={{
+                  <div style={{ 
                     position: 'absolute',
                     bottom: '16px',
-                    right: '16px',
+                    left: '16px',
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: '8px',
                     fontSize: '16px',
-                    cursor: 'pointer'
+                    color: '#1e293b',
+                    fontWeight: '600'
                   }}>
-                    {Icons.arrowDown}
+                    12%
+                    <div className="small-arrow-circle">
+                      <ArrowDownIcon />
+                    </div>
+                  </div>
+                  <div className="bottom-right-arrow-circle">
+                    <ArrowDownIcon />
                   </div>
                 </div>
 
                 {/* Financial Report */}
                 <div className="card" style={{
-                  background: '#1e293b',
-                  color: '#fff'
+                  background: '#000000',
+                  color: '#fff',
+                  padding: '18px'
                 }}>
                   <div style={{
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
-                    marginBottom: '12px'
+                    marginBottom: '24px'
                   }}>
-                    <span style={{ fontSize: '16px', cursor: 'pointer' }}><CloseIcon /></span>
-                    <span style={{ fontSize: '16px' }}>{Icons.document}</span>
-                    <span style={{ fontSize: '16px' }}>{Icons.arrow}</span>
-                  </div>
-                  <div style={{ fontSize: '14px', marginBottom: '8px', opacity: '0.8' }}>
-                    Track and Print Report
+                    <div className="gray-circle-icon">
+                      <CloseIcon />
                     </div>
-                  <div style={{ fontSize: '18px', fontWeight: '600' }}>
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      <div className="white-circle-icon">
+                        <DocumentIcon />
+                      </div>
+                      <div className="white-circle-icon">
+                        <ExternalLinkIcon />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="track-print-label">
+                    Track and Print Report
+                  </div>
+                  <div className="financial-report-title">
                     Financial Report
                   </div>
                 </div>
               </div>
-        </div>
-    </div>
+            </div>
+          </div>
 
           {/* Друга сітка карток */}
           <div className="income-balance-grid">
@@ -566,13 +619,13 @@ function HomePage() {
                     options={["Sort by Month", "Sort by Week"]}
                     value={sortByValue}
                     onChange={setSortByValue}
-                    className="custom-dropdown"
+                    className="custom-dropdown sort-dropdown"
                   />
                   <Dropdown
                     options={["All Sources", "Salary", "Freelance", "Bonus", "Another job"]}
                     value={allSourcesValue}
                     onChange={setAllSourcesValue}
-                    className="custom-dropdown custom-dropdown--black-hover"
+                    className="custom-dropdown custom-dropdown--black-hover all-sources-dropdown"
                     activeClassName={allSourcesValue === 'All Sources' ? 'all-sources-active' : ''}
                   />
                   <button className="more-btn"><MoreIcon /></button>
@@ -580,51 +633,99 @@ function HomePage() {
               </div>
               
               <div className="income-sources-content">
-                <div className="income-sources-left">
-                  <button className="days-btn">30 Days</button>
-                  <div className="income-amount">$ 7,72K</div>
-                  <div className="legend-title">Income sources</div>
-                  <div className="income-sources-subtitle">Statistic in a month</div>
-                  <div className="legend">
-                    <div className="legend-item"><span className="legend-dot salary"></span>Salary</div>
-                    <div className="legend-item"><span className="legend-dot freelance"></span>Freelance</div>
-                    <div className="legend-item"><span className="legend-dot bonus"></span>Bonus</div>
-                    <div className="legend-item"><span className="legend-dot another"></span>Another job</div>
+                <div className="income-sources-left" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+                  <div>
+                    <button className="days-btn">30 Days</button>
+                    <div className="income-amount" style={{ marginTop: '24px' }}>$ 7,72K</div>
+                    <div className="legend-title" style={{ marginTop: '32px' }}>Income sources</div>
+                    <div className="income-sources-subtitle">Statistic in a month</div>
+                  </div>
+                  <div className="legend" style={{ marginTop: 'auto', marginBottom: '40px' }}>
+                    <div className="legend-item" style={{ fontSize: '14px' }}><span className="legend-dot salary"></span>Salary</div>
+                    <div className="legend-item" style={{ fontSize: '14px' }}><span className="legend-dot freelance"></span>Freelance</div>
+                    <div className="legend-item" style={{ fontSize: '14px' }}><span className="legend-dot bonus"></span>Bonus</div>
+                    <div className="legend-item" style={{ fontSize: '14px' }}><span className="legend-dot another"></span>Another job</div>
                   </div>
                 </div>
                 <div className="income-sources-right">
-                  <div className="income-growth-label growth-label-vertical">
-                    <span className="growth-badge">
-                      <span className="growth-badge-icon">
-                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M7 11V3" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
-                          <path d="M7 3L3.5 6.5" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
-                          <path d="M7 3L10.5 6.5" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
-                        </svg>
-                      </span>
-                      +73,6%
-                    </span>
-                    <span className="growth-label-text">better than last month</span>
-                    <span className="income-growth-arrow">
-                      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M16 28V10" stroke="#16a34a" strokeWidth="2" strokeLinecap="round"/>
-                        <path d="M16 10L12 14" stroke="#16a34a" strokeWidth="2" strokeLinecap="round"/>
-                        <path d="M16 10L20 14" stroke="#16a34a" strokeWidth="2" strokeLinecap="round"/>
-                      </svg>
-                    </span>
-                  </div>
-                  <div className="income-bar-chart">
-                    <div className="bar bar1">
-                      <div className="bar-label"><span className="bar-label-icon"><ExternalLinkIcon /></span>12K</div>
+                  <div className="income-bar-chart" style={{ position: 'relative' }}>
+                    <div className="bar bar1" style={{
+                      background: 'repeating-linear-gradient(45deg, #1e293b, #1e293b 4px, #334155 4px, #334155 8px)',
+                      position: 'relative',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: '#fff',
+                      fontSize: '12px',
+                      fontWeight: '600'
+                    }}>
+                      7.7K
                     </div>
-                    <div className="bar bar2">
-                      <div className="bar-label"><span className="bar-label-icon"><ExternalLinkIcon /></span>8.1K</div>
+                    <div className="bar bar2" style={{
+                      background: 'repeating-linear-gradient(45deg, #1e40af, #1e40af 4px, #2563eb 4px, #2563eb 8px)',
+                      position: 'relative',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: '#fff',
+                      fontSize: '12px',
+                      fontWeight: '600'
+                    }}>
+                      5.6K
                     </div>
-                    <div className="bar bar3">
-                      <div className="bar-label"><span className="bar-label-icon"><ExternalLinkIcon /></span>7.1K</div>
+                    <div className="bar bar3" style={{
+                      background: 'repeating-linear-gradient(45deg, #3b82f6, #3b82f6 4px, #60a5fa 4px, #60a5fa 8px)',
+                      position: 'relative',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: '#fff',
+                      fontSize: '12px',
+                      fontWeight: '600'
+                    }}>
+                      12K
                     </div>
-                    <div className="bar bar4">
-                      <div className="bar-label"><span className="bar-label-icon"><ExternalLinkIcon /></span>5.6K</div>
+                    <div className="bar bar4" style={{
+                      background: 'repeating-linear-gradient(45deg, #93c5fd, #93c5fd 4px, #bfdbfe 4px, #bfdbfe 8px)',
+                      position: 'relative',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: '#fff',
+                      fontSize: '12px',
+                      fontWeight: '600'
+                    }}>
+                      8.1K
+                    </div>
+                    
+                    {/* Growth indicator positioned above 12K bar */}
+                    <div style={{
+                      position: 'absolute',
+                      top: '-10px',
+                      left: '62%',
+                      transform: 'translateX(-50%)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      gap: '4px'
+                    }}>
+                      <div style={{
+                        background: '#3b82f6',
+                        color: '#fff',
+                        borderRadius: '6px',
+                        padding: '4px 8px',
+                        fontSize: '12px',
+                        fontWeight: '600'
+                      }}>
+                        +73,6%
+                      </div>
+                      <div style={{
+                        fontSize: '10px',
+                        color: '#64748b',
+                        whiteSpace: 'nowrap'
+                      }}>
+                        better than last month
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -635,92 +736,86 @@ function HomePage() {
             {/* Financial Balance - 1/4 ширини */}
             <div className="card financial-balance-card">
               <div className="card-header">
-                <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#1e293b', margin: '0' }}>
+                <h3 style={{ fontSize: '20px', fontWeight: '700', color: '#1e293b', margin: '0' }}>
                   Financial Balance
                 </h3>
-                <Dropdown
-                  options={["For Week", "For Month"]}
-                  value={balancePeriod}
-                  onChange={setBalancePeriod}
-                  className="custom-dropdown"
-                />
-      </div>
+                <div className="white-circle-icon" style={{ border: '1px solid #1e293b' }}>
+                  <ExternalLinkIcon />
+                </div>
+              </div>
 
               {/* Легенда */}
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', marginBottom: '16px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px' }}>
-                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#e2e8f0' }}></div>
-                  Total
-        </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px' }}>
-                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#2563eb' }}></div>
-                  Profit Today
-      </div>
-    </div>
+              <div style={{ display: 'flex', gap: '16px', marginBottom: '16px' }}>
+                {/* Ліва колонка */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px' }}>
+                    <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#e2e8f0' }}></div>
+                    Total
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px' }}>
+                    <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#2563eb' }}></div>
+                    Profit Today
+                  </div>
+                </div>
+                {/* Права колонка */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px' }}>
+                    <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#64748b' }}></div>
+                    For Week
+                  </div>
+                </div>
+              </div>
 
               {/* Напівкругла діаграма */}
               <div className="half-circle-chart">
-                <svg width="120" height="60" viewBox="0 0 120 60">
-                  {/* Фоновий напівкруг */}
-                  <path
-                    d="M 10 50 A 50 50 0 0 1 110 50"
-                    fill="none"
-                    stroke="#e2e8f0"
-                    strokeWidth="8"
-                    strokeLinecap="round"
-                  />
-                  {/* Прогрес напівкруг */}
-                  <path
-                    className="half-circle-progress"
-                    d="M 10 50 A 50 50 0 0 1 110 50"
-                    fill="none"
-                    stroke="#2563eb"
-                    strokeWidth="8"
-                    strokeLinecap="round"
-                    strokeDasharray="34.54 157"
-                    strokeDashoffset="0"
-                    style={{
-                      transform: 'rotate(-90deg)',
-                      transformOrigin: '60px 30px'
-                    }}
-                  />
-                  {/* Центральний текст */}
-                  <text
-                    x="60"
-                    y="35"
-                    textAnchor="middle"
-                    fontSize="16"
-                    fontWeight="600"
-                    fill="#1e293b"
-                  >
-                    22%
-                  </text>
-                  <text
-                    x="60"
-                    y="50"
-                    textAnchor="middle"
-                    fontSize="10"
-                    fill="#64748b"
-                  >
-                    from yesterday
-                  </text>
-                </svg>
+                <div className="half-circle-progress">
+                  <div className="half-circle-filled"></div>
+                </div>
+                <div className="half-circle-text">
+                  <div className="percentage">22%</div>
+                  <div className="description">from yesterday</div>
+                </div>
               </div>
 
-              <div style={{ fontSize: '14px', color: '#64748b', marginBottom: '8px' }}>
-                22% from yesterday
-              </div>
+
+              
+              {/* Bottom profit section with rounded background */}
               <div style={{ 
                 display: 'flex', 
                 alignItems: 'center', 
-                gap: '4px',
-                fontSize: '14px',
-                color: '#16a34a'
+                justifyContent: 'space-between',
+                background: '#f1f5f9',
+                borderRadius: '20px',
+                padding: '12px 20px',
+                marginTop: 'auto',
+                textAlign: 'center'
               }}>
-                {Icons.arrow} Profit is 22% More short last week
+                <div style={{ 
+                  fontSize: '14px',
+                  color: '#1e293b',
+                  fontWeight: '500',
+                  flex: '1',
+                  textAlign: 'left'
+                }}>
+                  Profit is <strong>22%</strong> More short last week
+                </div>
+                <div style={{
+                  background: '#3b82f6',
+                  color: '#fff',
+                  borderRadius: '6px',
+                  padding: '4px 8px',
+                  fontSize: '12px',
+                  fontWeight: '600',
+                  whiteSpace: 'nowrap'
+                }}>
+                  +15%
+                </div>
               </div>
             </div>
-            </div>
+          </div>
+          
+          {/* Невидимий елемент для створення відступу 24px від низу */}
+          <div style={{ height: '24px' }}></div>
         </div>
       </div>
     </div>
